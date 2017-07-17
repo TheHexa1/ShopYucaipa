@@ -1,0 +1,61 @@
+[
+  {
+    "queNo":1,
+    "queName":"Frich's",
+    "queText":".... indicates correct answer",
+    "hint":"Time in Uptown",
+    "choice1":"Yucaipa City Jail",
+    "choice2":"Frich's Gift Shop",
+    "choice3":"10 Freeway at Rush Hour",
+    "ansChoice":2,
+    "queImgDrawable":"que1",
+    "ansImgDrawable":"ans1"
+  },
+  {
+    "queNo":2,
+    "queName":"Hickory Ranch",
+    "queText":".... indicates correct answer",
+    "hint":"A place to meet and \"Beef it up\"",
+    "choice1":"Powerhouse Gym",
+    "choice2":"Hickory Ranch Restaurant",
+    "choice3":"Yucaipa Community Park",
+    "ansChoice":2,
+    "queImgDrawable":"que2",
+    "ansImgDrawable":"ans2"
+  },
+  {
+    "queNo":3,
+    "queName":"Lazer Legacy",
+    "queText":".... indicates correct answer",
+    "hint":"Duck and Cover!",
+    "choice1":"Yucaipa Regional Park",
+    "choice2":"Wing Stop Restaurant",
+    "choice3":"Lazer Legacy",
+    "ansChoice":3,
+    "queImgDrawable":"que3",
+    "ansImgDrawable":"ans3"
+  },
+  {
+    "queNo":4,
+    "queName":"Sunshine Growers",
+    "queText":".... indicates correct answer",
+    "hint":"Petals and Pots",
+    "choice1":"Yucaipa Bike Shop",
+    "choice2":"El Dorado Ranch Park",
+    "choice3":"Sunshine Growers",
+    "ansChoice":3,
+    "queImgDrawable":"que4",
+    "ansImgDrawable":"ans4"
+  },
+  {
+    "queNo":5,
+    "queName":"Uptown Pets",
+    "queText":".... indicates correct answer",
+    "hint":"Fish and Feathers",
+    "choice1":"Uptown Pets",
+    "choice2":"Yucaipa Regional Park",
+    "choice3":"Hickory Ranch Steakhouse",
+    "ansChoice":1,
+    "queImgDrawable": "que5",
+    "ansImgDrawable":"ans5"
+  }]
