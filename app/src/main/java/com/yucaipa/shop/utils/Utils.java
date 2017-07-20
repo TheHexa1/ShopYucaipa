@@ -4,11 +4,14 @@ import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import com.yucaipa.shop.R;
+import com.yucaipa.shop.activities.FeaturedPhotoQuiz;
+import com.yucaipa.shop.activities.SignupActivity;
 
 /**
  * Created by Vivek_Hexa on 12-July-17.
@@ -62,7 +65,7 @@ public class Utils extends Application {
         }
     }
 
-    public void showAlertDialog(String message){
+    public void showAlertDialog(final String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
 
         builder.setMessage(message);
@@ -70,6 +73,10 @@ public class Utils extends Application {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+                if(message.contains("registered")){
+                    context.startActivity(new Intent(context, FeaturedPhotoQuiz.class));
+                }
                 dialog.dismiss();
             }
         });

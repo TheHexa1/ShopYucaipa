@@ -2,7 +2,10 @@ package com.yucaipa.shop.activities;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.annotation.IdRes;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,6 +45,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
     int current_que_no = 0;
     Utils utils;
     RadioGroup.OnCheckedChangeListener checkedChangeListener;
+    boolean exit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +117,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         iv_que_img = (ImageView) findViewById(R.id.iv_que_img);
         iv_yucaipa_logo = (ImageView) findViewById(R.id.iv_yucaipa_logo);
 
-//        Glide.with(this).load(R.drawable.yucaipa_logo_trans).into(iv_yucaipa_logo);
+        Glide.with(this).load(R.drawable.yucaipa_logo_quiz).into(iv_yucaipa_logo);
 
         btn_next = (Button) findViewById(R.id.btn_next);
         btn_next.setOnClickListener(new View.OnClickListener() {
@@ -255,5 +259,25 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         final AlertDialog alert =  builder.create();
 
         alert.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+
+        if (exit) {
+            ActivityCompat.finishAffinity(this); // finish activity and exit from the app
+        } else {
+            Toast.makeText(this, "Press Back again to exit",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 3 * 1000);
+
+        }
     }
 }

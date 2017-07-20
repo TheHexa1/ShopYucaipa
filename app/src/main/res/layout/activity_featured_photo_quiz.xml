@@ -21,8 +21,7 @@
             android:layout_gravity="center"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:layout_marginTop="16dp"
-            app:srcCompat="@drawable/yucaipa_logo_trans" />
+            android:layout_marginTop="16dp" />
 
         <TextView
             android:id="@+id/tv_que_text"

@@ -1,6 +1,7 @@
 package com.yucaipa.shop.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,25 +32,34 @@ public class SignupActivity extends AppCompatActivity {
 
     Utils utils;
     TextInputEditText tiet_user_email, tiet_user_phone_no;
+    SharedPreferences my_pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+
+        my_pref = getSharedPreferences("com.yucaipa.shop",MODE_PRIVATE);
 
         utils = Utils.getInstance(this);
-        tiet_user_email = (TextInputEditText) findViewById(R.id.tiet_user_email);
-        tiet_user_phone_no = (TextInputEditText) findViewById(R.id.tiet_user_phone_no);
+        if(my_pref.getBoolean("isRegistered",false)){
+            startActivity(new Intent(SignupActivity.this, FeaturedPhotoQuiz.class));
+        }else {
+            setContentView(R.layout.activity_signup);
 
-        findViewById(R.id.btn_signup).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*utils.showpDialog();
-                validateFields();*/
+            tiet_user_email = (TextInputEditText) findViewById(R.id.tiet_user_email);
+            tiet_user_phone_no = (TextInputEditText) findViewById(R.id.tiet_user_phone_no);
 
-                startActivity(new Intent(SignupActivity.this, FeaturedPhotoQuiz.class));
-            }
-        });
+            findViewById(R.id.btn_signup).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    utils.showpDialog();
+                    validateFields();
+                }
+            });
+        }
+
+
     }
 
     public void validateFields(){
@@ -63,7 +73,7 @@ public class SignupActivity extends AppCompatActivity {
             utils.hidepDialog();
             tiet_user_phone_no.setError("Please enter phone number!");
         }else{
-            
+            makeSignUpReq();
         }
 
     }
@@ -78,8 +88,10 @@ public class SignupActivity extends AppCompatActivity {
                             JSONObject responseJson = new JSONObject(response);
 
                             if(responseJson.getString("result_code").equals("0")){
+                                my_pref.edit().putBoolean("isRegistered",true).apply();
                                 utils.showAlertDialog("You are successfully registered");
                             }else{
+                                my_pref.edit().putBoolean("isRegistered",false).apply();
                                 utils.showAlertDialog(responseJson.getString("message"));
                             }
                         } catch (JSONException e) {
