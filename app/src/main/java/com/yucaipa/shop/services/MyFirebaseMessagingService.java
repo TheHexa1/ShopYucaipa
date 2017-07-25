@@ -13,10 +13,12 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.yucaipa.shop.R;
+import com.yucaipa.shop.receivers.NotificationActionBroadcastReceiver;
 
 import java.io.File;
 import java.io.IOException;
@@ -146,6 +148,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }*/
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+/*
+        RemoteViews notificationView = new RemoteViews(getPackageName(),
+                R.layout.custom_notification_layout);
+
+
+
+        Intent intent = new Intent(getApplicationContext(), NotificationActionBroadcastReceiver.class);
+
+        PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(this, 0,
+                intent, 0);
+
+        notificationView.setOnClickPendingIntent(R.id.closeOnFlash,
+                pendingSwitchIntent);*/
+
+
+        Intent accessIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://yucaipachamber.org/"));
+        accessIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         //define text to be shown in expanded mode
         NotificationCompat.BigTextStyle bigxtstyle =
@@ -154,14 +173,33 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         bigxtstyle.setBigContentTitle(title);
 
         notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(title)
+                .setSmallIcon(R.drawable.ans1)
+                .setContentTitle("SAMPLE OFFER")
                 .setStyle(bigxtstyle)
-                .setAutoCancel(true)
+                .setAutoCancel(false)
                 .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent)
+                .setContentIntent(PendingIntent.getActivity(this, 0, accessIntent, 0))
                 .setPriority(Notification.PRIORITY_MAX)
-                .setContentText(messageBody);
+                .setContentText("BUY 1 GET 2 FREE!");
+
+        /*action buttons */
+
+        Intent guidanceIntent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse("https://www.google.com/maps/dir/?api=1&origin=my location&destination=Frisch's Clock Chalet & Gift Shop&travelmode=driving"));
+        /*https://www.google.com/maps/dir/?api=1&origin=Uptown Pets, 35039 Yucaipa Blvd, Yucaipa, CA 92399&destination=Frisch's Clock Chalet & Gift Shop&travelmode=driving*/
+        guidanceIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:9737461072"));
+        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        /*notificationBuilder.addAction(R.drawable.ic_open_in_browser_black_24px, "ACCESS",
+                PendingIntent.getActivity(this, 0, accessIntent, 0));*/
+
+        notificationBuilder.addAction(R.drawable.ic_directions_black_24px, "GUIDANCE",
+                PendingIntent.getActivity(this, 1, guidanceIntent, 0));
+
+        notificationBuilder.addAction(R.drawable.ic_call_black_24px, "CALL",
+                PendingIntent.getActivity(this, 2, callIntent, 0));
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

@@ -3,6 +3,7 @@
     package="com.yucaipa.shop">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!--<uses-permission android:name="android.permission.CALL_PHONE" />-->
 
     <application
         android:allowBackup="true"
@@ -43,6 +44,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receivers.NotificationActionBroadcastReceiver"
+            android:exported="false">
         </receiver>
     </application>
 
