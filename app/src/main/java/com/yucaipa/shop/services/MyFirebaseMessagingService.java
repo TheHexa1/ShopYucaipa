@@ -18,7 +18,6 @@ import android.widget.RemoteViews;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.yucaipa.shop.R;
-import com.yucaipa.shop.receivers.NotificationActionBroadcastReceiver;
 
 import java.io.File;
 import java.io.IOException;

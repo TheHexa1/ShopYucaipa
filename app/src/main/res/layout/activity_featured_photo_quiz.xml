@@ -16,14 +16,14 @@
 
         <ImageView
             android:id="@+id/iv_yucaipa_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="250dp"
+            android:layout_height="150dp"
             android:layout_gravity="center"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="16dp" />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/tv_que_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,12 +31,12 @@
             android:gravity="center"
             android:text="Where am i?"
             android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp" />-->
 
         <ImageView
             android:id="@+id/iv_que_img"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="300dp"
             android:scaleType="centerInside" />
 
         <LinearLayout
@@ -66,85 +66,6 @@
                 android:textColor="@color/accent"
                 android:textSize="14sp" />
         </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_hint_ans"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:background="@android:color/white"
-            android:visibility="visible">
-
-            <LinearLayout
-                android:id="@+id/ll_hint"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="50dp">
-
-                <TextView
-                    android:id="@+id/textView7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hint :"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_hint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="ok google" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_answers"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="Answer(Select one)"
-                    android:textColor="#000" />
-
-                <RadioGroup
-                    android:id="@+id/rg_ans"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="16dp">
-
-                    <RadioButton
-                        android:id="@+id/rd_choice_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="RadioButton" />
-
-                    <RadioButton
-                        android:id="@+id/rd_choice_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="RadioButton" />
-
-                    <RadioButton
-                        android:id="@+id/rd_choice_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="RadioButton" />
-
-                </RadioGroup>
-
-            </LinearLayout>
-        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

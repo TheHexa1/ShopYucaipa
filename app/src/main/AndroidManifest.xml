@@ -46,9 +46,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receivers.NotificationActionBroadcastReceiver"
-            android:exported="false">
-        </receiver>
     </application>
 
 </manifest>
