@@ -87,6 +87,14 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         iv_que_img = (ImageView) findViewById(R.id.iv_que_img);
         iv_yucaipa_logo = (ImageView) findViewById(R.id.iv_yucaipa_logo);
 
+        iv_yucaipa_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent accessIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://yucaipachamber.org/"));
+                startActivity(accessIntent);
+            }
+        });
+
         Glide.with(this).load(R.drawable.yucaipa_logo_quiz).into(iv_yucaipa_logo);
 /*
         Glide.with(this)
@@ -158,7 +166,6 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         ll_hint = (LinearLayout) view.findViewById(R.id.ll_hint);
 
         rl_hint_ans = (RelativeLayout) view.findViewById(R.id.rl_hint_ans);
-
     }
 
     private void loadQueImage(){
@@ -256,13 +263,32 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             Glide.with(this)
                     .load(utils.getDrawableResId(question.getAnsImgDrawable()))
                     .into((ImageView) view.findViewById(R.id.iv_ans_logo));
+
+            builder.setNegativeButton("CALL", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    String phone_no = utils.getTelephoneNumber(utils.getDrawableResId(question.getAnsImgDrawable()));
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+phone_no));
+                    startActivity(callIntent);
+                }
+            });
+
+            builder.setPositiveButton("OFFER", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String url = utils.getWebsiteUrl(utils.getDrawableResId(question.getAnsImgDrawable()));
+                    Intent callIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(callIntent);
+                }
+            });
         }else{
             message = "Wrong!";
             btn_label = "Try Again!";
         }
         builder.setMessage(message);
 
-        builder.setPositiveButton(btn_label, new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(btn_label, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

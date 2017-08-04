@@ -97,4 +97,38 @@ public class Utils extends Application {
         // get resource id by image name
         return context.getResources().getIdentifier(drawableName, "drawable",context.getPackageName());
     }
+
+    public String getTelephoneNumber(int flag){
+        switch (flag){
+            case R.drawable.ans1:
+                return "9097973249";
+            case R.drawable.ans2:
+                return "9097901953";
+            case R.drawable.ans3:
+                return "9097907011";
+            case R.drawable.ans4:
+                return "9099237277";
+            case R.drawable.ans5:
+                return "9097975566";
+            default:
+                return "";
+        }
+    }
+
+    public String getWebsiteUrl(int flag){
+        switch (flag){
+            case R.drawable.ans1:
+                return "https://www.facebook.com/Frischs-Clock-Chalet-Gifts-508757595820237/";
+            case R.drawable.ans2:
+                return "http://hickoryranch.com/";
+            case R.drawable.ans3:
+                return "https://lazerlegacy.net/";
+            case R.drawable.ans4:
+                return "http://sunshinegrowersnursery.com/";
+            case R.drawable.ans5:
+                return "https://uptown-pet.com/";
+            default:
+                return "http://yucaipachamber.org/";
+        }
+    }
 }

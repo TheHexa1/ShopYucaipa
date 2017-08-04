@@ -17,6 +17,7 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.yucaipa.shop.R;
 import com.yucaipa.shop.utils.Constants;
 import com.yucaipa.shop.utils.MySingleton;
@@ -73,12 +74,12 @@ public class SignupActivity extends AppCompatActivity {
             utils.hidepDialog();
             tiet_user_phone_no.setError("Please enter phone number!");
         }else{
-            makeSignUpReq();
+            makeSignUpReq(FirebaseInstanceId.getInstance().getToken());
         }
 
     }
     
-    private void makeSignUpReq(){
+    private void makeSignUpReq(final String fcm_id){
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.SIGNUP_URL,
                 new Response.Listener<String>(){
 
@@ -87,13 +88,13 @@ public class SignupActivity extends AppCompatActivity {
                         try {
                             JSONObject responseJson = new JSONObject(response);
 
-                            if(responseJson.getString("result_code").equals("0")){
+//                            if(responseJson.getString("result_code").equals("0")){
                                 my_pref.edit().putBoolean("isRegistered",true).apply();
                                 utils.showAlertDialog("You are successfully registered");
-                            }else{
-                                my_pref.edit().putBoolean("isRegistered",false).apply();
-                                utils.showAlertDialog(responseJson.getString("message"));
-                            }
+//                            }else{
+//                                my_pref.edit().putBoolean("isRegistered",false).apply();
+//                                utils.showAlertDialog(responseJson.getString("message"));
+//                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -125,6 +126,7 @@ public class SignupActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put(Constants.USER_EMAIL, tiet_user_email.getText().toString());
                 params.put(Constants.USER_PHONE_NO, tiet_user_phone_no.getText().toString());
+                params.put("fcm_id", fcm_id);
                 return params;
             }
         };
