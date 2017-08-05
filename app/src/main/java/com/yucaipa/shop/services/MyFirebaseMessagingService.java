@@ -18,6 +18,7 @@ import android.widget.RemoteViews;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.yucaipa.shop.R;
+import com.yucaipa.shop.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,8 +38,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     NotificationCompat.Builder notificationBuilder;
 
+    Utils utils;
+
     String title = "Yucaipa Shop", msgBody = "", msg = "";
     int noti_id = 0;
+    int shop_id;
 
     public static Bitmap getBitmapFromURL(String src) {
         try {
@@ -75,6 +79,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "FCM Data: " + remoteMessage.getData());
 //        Log.d(TAG, "FCM Noti: "+remoteMessage.getNotification().);
 
+        utils = Utils.getInstance(getApplicationContext());
 
 //        mContext = getApplicationContext().getApplicationContext();
 
@@ -86,6 +91,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        String tag = remoteMessage.getData().get("tag");
         msgBody = remoteMessage.getData().get("message");
         title = remoteMessage.getData().get("title");
+        shop_id = utils.getDrawableResId("ans"+remoteMessage.getData().get("shop_id"));
         String noti_id_str = String.valueOf(new Date().getTime());
 
         if(remoteMessage.getData().containsKey("notification_id")) {
@@ -162,7 +168,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 pendingSwitchIntent);*/
 
 
-        Intent accessIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://yucaipachamber.org/"));
+        Intent accessIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(utils.getWebsiteUrl(shop_id)));
         accessIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         //define text to be shown in expanded mode
@@ -172,23 +178,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         bigxtstyle.setBigContentTitle(title);
 
         notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ans1)
-                .setContentTitle("SAMPLE OFFER")
+                .setSmallIcon(R.drawable.ic_ans1)
+                .setContentTitle(title)
                 .setStyle(bigxtstyle)
                 .setAutoCancel(false)
                 .setSound(defaultSoundUri)
                 .setContentIntent(PendingIntent.getActivity(this, 0, accessIntent, 0))
                 .setPriority(Notification.PRIORITY_MAX)
-                .setContentText("BUY 1 GET 2 FREE!");
+                .setContentText(msgBody);
 
         /*action buttons */
 
         Intent guidanceIntent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("https://www.google.com/maps/dir/?api=1&origin=my location&destination=Frisch's Clock Chalet & Gift Shop&travelmode=driving"));
+                Uri.parse("https://www.google.com/maps/dir/?api=1&origin=my location&destination="+utils.getLocation(shop_id)+"&travelmode=driving"));
         /*https://www.google.com/maps/dir/?api=1&origin=Uptown Pets, 35039 Yucaipa Blvd, Yucaipa, CA 92399&destination=Frisch's Clock Chalet & Gift Shop&travelmode=driving*/
         guidanceIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:9737461072"));
+        Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse(utils.getTelephoneNumber(shop_id)));
         callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         /*notificationBuilder.addAction(R.drawable.ic_open_in_browser_black_24px, "ACCESS",

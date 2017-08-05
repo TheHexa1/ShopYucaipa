@@ -1,10 +1,14 @@
 package com.yucaipa.shop.utils;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
@@ -22,12 +26,21 @@ public class Utils extends Application {
     Context context;
     public static Utils utils;
     ProgressDialog pDialog;
+    Handler mHandler;
 
-    public Utils(Context context){
+    public Utils(final Context context){
 
         this.context = context;
-        pDialog = new ProgressDialog(context);
-        pDialog.setMessage("Please wait...");
+
+        mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                // This is where you do your work in the UI thread.
+                // Your worker tells you in the message what to do.
+                pDialog = new ProgressDialog(context);
+                pDialog.setMessage("Please wait...");
+            }
+        };
     }
 
     public static Utils getInstance(Context context){
@@ -129,6 +142,23 @@ public class Utils extends Application {
                 return "https://uptown-pet.com/";
             default:
                 return "http://yucaipachamber.org/";
+        }
+    }
+
+    public String getLocation(int flag){
+        switch (flag){
+            case R.drawable.ans1:
+                return "Frisch's Clock Chalet & Gift Shop, 35145 Yucaipa Blvd, Yucaipa, CA 92399";
+            case R.drawable.ans2:
+                return "Hickory Ranch Steakhouse, 32971 Yucaipa Blvd, Yucaipa, CA 92399";
+            case R.drawable.ans3:
+                return "Lazer Legacy, 32355 Yucaipa Blvd Suite 11, Yucaipa, CA 92399";
+            case R.drawable.ans4:
+                return "Sunshine Nurseries, 34017 Yucaipa Blvd, Yucaipa, CA 92399";
+            case R.drawable.ans5:
+                return "Uptown Pets, 35039 Yucaipa Blvd, Yucaipa, CA 92399";
+            default:
+                return "my location";
         }
     }
 }
