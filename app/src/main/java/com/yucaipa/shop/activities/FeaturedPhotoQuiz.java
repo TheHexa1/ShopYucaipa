@@ -1,5 +1,6 @@
 package com.yucaipa.shop.activities;
 
+import android.app.Notification;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,6 +31,7 @@ import com.yucaipa.shop.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -54,6 +56,9 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        enableCustomNotificationIconInMIUI();
+
         setContentView(R.layout.activity_featured_photo_quiz);
 
         utils = Utils.getInstance(this);
@@ -379,5 +384,24 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             }, 3 * 1000);
 
         }
+    }
+
+    public void enableCustomNotificationIconInMIUI(){
+        try {
+            Notification notification = new Notification();
+            Class miuiNotificationClass = Class.forName("android.app.MiuiNotification");
+            Object miuiNotification = miuiNotificationClass.newInstance();
+            Field field = miuiNotification.getClass().getDeclaredField("customizedIcon");
+            field.setAccessible(true);
+
+            field.set(miuiNotification, true);
+            field = notification.getClass().getField("extraNotification");
+            field.setAccessible(true);
+
+            field.set(notification, miuiNotification);
+        } catch (Exception e) {
+
+        }
+
     }
 }

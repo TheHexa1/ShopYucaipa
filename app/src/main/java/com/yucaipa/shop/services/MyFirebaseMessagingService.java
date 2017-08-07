@@ -23,8 +23,10 @@ import com.yucaipa.shop.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -119,6 +121,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      */
 
     private void sendTextNotification(String tag, String messageBody) {
+
         PendingIntent pendingIntent = null;
 //        Intent intent = null;
         /*Intent intent = new Intent(this, Notifications.class);
@@ -172,39 +175,59 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         accessIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         //define text to be shown in expanded mode
-        NotificationCompat.BigTextStyle bigxtstyle =
+        /*NotificationCompat.BigTextStyle bigxtstyle =
                 new NotificationCompat.BigTextStyle();
         bigxtstyle.bigText(messageBody);
-        bigxtstyle.setBigContentTitle(title);
+        bigxtstyle.setBigContentTitle(title);*/
 
-        notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_ans1)
-                .setContentTitle(title)
-                .setStyle(bigxtstyle)
-                .setAutoCancel(false)
-                .setSound(defaultSoundUri)
-                .setContentIntent(PendingIntent.getActivity(this, 0, accessIntent, 0))
-                .setPriority(Notification.PRIORITY_MAX)
-                .setContentText(msgBody);
+        RemoteViews bigView = new RemoteViews(getApplicationContext().getPackageName(),
+                R.layout.custom_notification_layout);
 
-        /*action buttons */
+        // notification's icon
+        bigView.setImageViewResource(R.id.notifiation_image, shop_id);
+        // notification's title
+        bigView.setTextViewText(R.id.title, title);
+        // shop's title
+        bigView.setTextViewText(R.id.shop_name, utils.getShopName(shop_id));
+        // notification's content
+        bigView.setTextViewText(R.id.tv_body, messageBody);
+        // notification's time
+        Calendar c = Calendar.getInstance();
+        bigView.setTextViewText(R.id.tv_time, utils.getCurrentTime());
 
         Intent guidanceIntent = new Intent(android.content.Intent.ACTION_VIEW,
                 Uri.parse("https://www.google.com/maps/dir/?api=1&origin=my location&destination="+utils.getLocation(shop_id)+"&travelmode=driving"));
         /*https://www.google.com/maps/dir/?api=1&origin=Uptown Pets, 35039 Yucaipa Blvd, Yucaipa, CA 92399&destination=Frisch's Clock Chalet & Gift Shop&travelmode=driving*/
         guidanceIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse(utils.getTelephoneNumber(shop_id)));
+        Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+utils.getTelephoneNumber(shop_id)));
         callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        bigView.setOnClickPendingIntent(R.id.tv_guidance, PendingIntent.getActivity(this,0,guidanceIntent,0));
+        bigView.setOnClickPendingIntent(R.id.tv_call, PendingIntent.getActivity(this,1,callIntent,0));
+        
+        notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)/*
+                .setContentTitle(title)
+                .setStyle(bigxtstyle)*/
+                .setAutoCancel(false)
+                .setSound(defaultSoundUri)
+                .setContentIntent(PendingIntent.getActivity(this, 2, accessIntent, 0))
+                .setPriority(Notification.PRIORITY_MAX)/*
+                .setContentText(msgBody)*/
+                .setCustomContentView(bigView)
+                .setCustomBigContentView(bigView);
+
+        /*action buttons */
 
         /*notificationBuilder.addAction(R.drawable.ic_open_in_browser_black_24px, "ACCESS",
                 PendingIntent.getActivity(this, 0, accessIntent, 0));*/
 
-        notificationBuilder.addAction(R.drawable.ic_directions_black_24px, "GUIDANCE",
+        /*notificationBuilder.addAction(R.drawable.ic_directions_black_24px, "GUIDANCE",
                 PendingIntent.getActivity(this, 1, guidanceIntent, 0));
 
         notificationBuilder.addAction(R.drawable.ic_call_black_24px, "CALL",
-                PendingIntent.getActivity(this, 2, callIntent, 0));
+                PendingIntent.getActivity(this, 2, callIntent, 0));*/
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

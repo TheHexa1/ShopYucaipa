@@ -11,11 +11,14 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
+import android.text.format.DateFormat;
 import android.widget.Toast;
 
 import com.yucaipa.shop.R;
 import com.yucaipa.shop.activities.FeaturedPhotoQuiz;
 import com.yucaipa.shop.activities.SignupActivity;
+
+import java.util.Calendar;
 
 /**
  * Created by Vivek_Hexa on 12-July-17.
@@ -29,22 +32,10 @@ public class Utils extends Application {
     Handler mHandler;
 
     public Utils(final Context context){
-
         this.context = context;
-
-        mHandler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message message) {
-                // This is where you do your work in the UI thread.
-                // Your worker tells you in the message what to do.
-                pDialog = new ProgressDialog(context);
-                pDialog.setMessage("Please wait...");
-            }
-        };
     }
 
     public static Utils getInstance(Context context){
-
 //        if(utils == null){
             utils = new Utils(context);
 //        }
@@ -56,6 +47,8 @@ public class Utils extends Application {
     }
 
     public void showpDialog() {
+        pDialog = new ProgressDialog(context);
+        pDialog.setMessage("Please wait...");
         if (!pDialog.isShowing())
             pDialog.show();
     }
@@ -111,6 +104,23 @@ public class Utils extends Application {
         return context.getResources().getIdentifier(drawableName, "drawable",context.getPackageName());
     }
 
+    public String getShopName(int flag){
+        switch (flag){
+            case R.drawable.ans1:
+                return "Friches";
+            case R.drawable.ans2:
+                return "Hickory Ranch";
+            case R.drawable.ans3:
+                return "Lazer Legacy";
+            case R.drawable.ans4:
+                return "Sunshine Growers";
+            case R.drawable.ans5:
+                return "Uptown Pets";
+            default:
+                return "";
+        }
+    }
+
     public String getTelephoneNumber(int flag){
         switch (flag){
             case R.drawable.ans1:
@@ -160,5 +170,10 @@ public class Utils extends Application {
             default:
                 return "my location";
         }
+    }
+
+    public String getCurrentTime() {
+        String delegate = "hh:mm aaa";
+        return (String) DateFormat.format(delegate, Calendar.getInstance().getTime());
     }
 }
