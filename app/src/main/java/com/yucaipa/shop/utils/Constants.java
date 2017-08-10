@@ -12,4 +12,6 @@ public class Constants {
     public static String USER_DEVICE_ID = "device_id";
     public static String USER_EMAIL = "user_email";
     public static String USER_PHONE_NO = "user_phone_no";
+
+    public static String ACTION_PROXIMITY_ALERT = "com.yucaipa.shop";
 }

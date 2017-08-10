@@ -9,7 +9,9 @@
     "choice3":"10 Freeway at Rush Hour",
     "ansChoice":2,
     "queImgDrawable":"que1",
-    "ansImgDrawable":"ans1"
+    "ansImgDrawable":"ans1",
+    "latitude":"34.033897",
+    "longitude":"-117.037845"
   },
   {
     "queNo":2,
@@ -21,7 +23,9 @@
     "choice3":"Yucaipa Community Park",
     "ansChoice":2,
     "queImgDrawable":"que2",
-    "ansImgDrawable":"ans2"
+    "ansImgDrawable":"ans2",
+    "latitude":"34.033666",
+    "longitude":"-117.085174"
   },
   {
     "queNo":3,
@@ -33,7 +37,9 @@
     "choice3":"Lazer Legacy",
     "ansChoice":3,
     "queImgDrawable":"que3",
-    "ansImgDrawable":"ans3"
+    "ansImgDrawable":"ans3",
+    "latitude":"34.033299",
+    "longitude":"-117.097920"
   },
   {
     "queNo":4,
@@ -45,7 +51,9 @@
     "choice3":"Sunshine Growers",
     "ansChoice":3,
     "queImgDrawable":"que4",
-    "ansImgDrawable":"ans4"
+    "ansImgDrawable":"ans4",
+    "latitude":"34.033935",
+    "longitude":"-117.062489"
   },
   {
     "queNo":5,
@@ -57,5 +65,7 @@
     "choice3":"Hickory Ranch Steakhouse",
     "ansChoice":1,
     "queImgDrawable": "que5",
-    "ansImgDrawable":"ans5"
+    "ansImgDrawable":"ans5",
+    "latitude":"34.033939",
+    "longitude":"-117.040162"
   }]

@@ -3,6 +3,8 @@
     package="com.yucaipa.shop">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!--<uses-permission android:name="android.permission.CALL_PHONE" />-->
 
     <application
@@ -21,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.FeaturedPhotoQuiz"></activity>
+        <activity android:name=".activities.FeaturedPhotoQuiz"/>
 
         <service
             android:name=".services.MyFirebaseMessagingService"
@@ -30,6 +32,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
 
         <service
             android:name=".services.MyFirebaseInstanceIDService"
@@ -43,6 +46,13 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receivers.ProximityAlertReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.yucaipa.shop" />
             </intent-filter>
         </receiver>
 

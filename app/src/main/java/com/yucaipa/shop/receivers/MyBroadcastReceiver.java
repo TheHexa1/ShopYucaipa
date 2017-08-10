@@ -19,9 +19,5 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         //firebase messaging service
         Intent fcm_noti = new Intent(context, MyFirebaseMessagingService.class);
         context.startService(fcm_noti);
-
-        //autosync  service
-//        Intent autofullsync = new Intent(context, AutoFullSyncService.class);
-//        context.startService(autofullsync);
     }
 }

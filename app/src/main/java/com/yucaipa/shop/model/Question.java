@@ -20,6 +20,8 @@ public class Question {
     private String ansImgUrl;*/
     private String queImgDrawable;
     private String ansImgDrawable;
+    private String latitude;
+    private String longitude;
 
     public int getQueNo() {
         return queNo;
@@ -99,5 +101,21 @@ public class Question {
 
     public void setAnsImgDrawable(String ansImgDrawable) {
         this.ansImgDrawable = ansImgDrawable;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 }

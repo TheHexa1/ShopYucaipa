@@ -1,17 +1,25 @@
 package com.yucaipa.shop.activities;
 
-import android.app.Notification;
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,13 +34,17 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yucaipa.shop.R;
+import com.yucaipa.shop.model.Location;
 import com.yucaipa.shop.model.Question;
+import com.yucaipa.shop.utils.Constants;
+import com.yucaipa.shop.utils.GPSTracker;
 import com.yucaipa.shop.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FeaturedPhotoQuiz extends AppCompatActivity {
@@ -53,21 +65,58 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
     AlertDialog dialogInterface;
     String message = "", btn_label = "";
 
+    GPSTracker gps;
+    Handler handler;
+
+    PendingIntent[] pendingIntents;
+
+    LocationManager locationManager;
+
+    boolean permission_flag = false;
+
+    int PERMISSION_ALL = 321;
+
+    String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        enableCustomNotificationIconInMIUI();
-
         setContentView(R.layout.activity_featured_photo_quiz);
 
         utils = Utils.getInstance(this);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        gps = new GPSTracker(this);
+
+        // check if GPS enabled
+        if(gps.canGetLocation()){
+            // \n is for new line
+            Log.i("Your Location is" , "\nLat: " + gps.getLatitude() + "\nLong: " + gps.getLongitude());
+        }else{
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            gps.showSettingsAlert();
+        }
+
+//        handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+
+//            }
+//        },500);
 
 //        initViews(getLayoutInflater().inflate(R.layout.custom_quiz_popup_layout,null));
 
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Question>>(){}.getType();
         questions = gson.fromJson(loadJSONFromAsset("questions.json"), listType);
+
+        //set proximity alerts
+        pendingIntents = new PendingIntent[questions.size()];
+        addProximityAlertCoordinates();
 
         //load first que
         question = questions.get(current_que_no);
@@ -135,7 +184,33 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             }
         });
 
-        loadQueImage();
+        //************************************************
+        //        ask for permissions in newer version of android.
+        permission_flag = hasPermissions(this, PERMISSIONS);
+
+        if(!permission_flag){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+        else{
+            loadQueImage();
+        }
+
+    }
+
+    //**************************
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            //for Android M and above versions
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    // Permission Denied
+//                    Toast.makeText(context,"You need to allow all the required permissions to access this app!", Toast.LENGTH_LONG)
+//                            .show();
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void initViews(View view){
@@ -369,8 +444,8 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-
         if (exit) {
+            removeAllProximityAlerts();
             ActivityCompat.finishAffinity(this); // finish activity and exit from the app
         } else {
             Toast.makeText(this, "Press Back again to exit",
@@ -382,26 +457,60 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
                     exit = false;
                 }
             }, 3 * 1000);
-
         }
     }
 
-    public void enableCustomNotificationIconInMIUI(){
-        try {
-            Notification notification = new Notification();
-            Class miuiNotificationClass = Class.forName("android.app.MiuiNotification");
-            Object miuiNotification = miuiNotificationClass.newInstance();
-            Field field = miuiNotification.getClass().getDeclaredField("customizedIcon");
-            field.setAccessible(true);
+    public void removeAllProximityAlerts(){
+        if(pendingIntents.length > 0) {
+            for (int i = 0; i < questions.size(); i++) {
+                locationManager.removeProximityAlert(pendingIntents[i]);
+            }
+        }
+    }
 
-            field.set(miuiNotification, true);
-            field = notification.getClass().getField("extraNotification");
-            field.setAccessible(true);
-
-            field.set(notification, miuiNotification);
-        } catch (Exception e) {
-
+    public void addProximityAlertCoordinates(){
+        for(int i=0; i< questions.size(); i++){
+           addProximityAlert(new Location(questions.get(i).getQueNo(),
+                   Double.parseDouble(questions.get(i).getLatitude()),
+                   Double.parseDouble(questions.get(i).getLongitude()),
+                   1.0f));
         }
 
+    }
+
+    public void addProximityAlert(Location location){
+        Intent intent = new Intent(Constants.ACTION_PROXIMITY_ALERT);
+        intent.putExtra("shop_id",location.get_ID());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, location.get_ID(), intent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        pendingIntents[location.get_ID()-1] = pendingIntent;
+
+        try {
+            locationManager.addProximityAlert(location.getLatitude(),
+                    location.getLongitude(), 100, -1, pendingIntent);
+        }catch (SecurityException se){
+            Toast.makeText(this,"Please enable GPS in your phone!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == PERMISSION_ALL){
+//            permission_flag = true;
+            //************************************************
+            //        ask for permissions in newer version of android.
+            permission_flag = hasPermissions(this, PERMISSIONS);
+
+            if(permission_flag){
+                loadQueImage();
+            }
+            else{Toast.makeText(getApplicationContext(),"You need to allow all the required permissions to use this app!", Toast.LENGTH_LONG)
+                    .show();
+                ActivityCompat.finishAffinity(this);
+            }
+        }
     }
 }
