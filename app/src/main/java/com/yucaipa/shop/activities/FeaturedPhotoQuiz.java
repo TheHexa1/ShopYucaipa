@@ -15,6 +15,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,13 +33,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yucaipa.shop.R;
 import com.yucaipa.shop.model.Location;
 import com.yucaipa.shop.model.Question;
+import com.yucaipa.shop.services.GeofenceTransitionsIntentService;
 import com.yucaipa.shop.utils.Constants;
-import com.yucaipa.shop.utils.GPSTracker;
 import com.yucaipa.shop.utils.Utils;
 
 import java.io.IOException;
@@ -46,8 +55,12 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class FeaturedPhotoQuiz extends AppCompatActivity {
+public class FeaturedPhotoQuiz extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        ResultCallback<Status> {
 
     TextView tv_show_hint,tv_ans_box,tv_hint;
     RadioGroup rg_ans;
@@ -65,16 +78,14 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
     AlertDialog dialogInterface;
     String message = "", btn_label = "";
 
-    GPSTracker gps;
-    Handler handler;
-
-    PendingIntent[] pendingIntents;
-
     LocationManager locationManager;
 
     boolean permission_flag = false;
 
     int PERMISSION_ALL = 321;
+
+    protected ArrayList<Geofence> mGeofenceList;
+    protected GoogleApiClient mGoogleApiClient;
 
     String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -87,36 +98,9 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         utils = Utils.getInstance(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        gps = new GPSTracker(this);
-
-        // check if GPS enabled
-        if(gps.canGetLocation()){
-            // \n is for new line
-            Log.i("Your Location is" , "\nLat: " + gps.getLatitude() + "\nLong: " + gps.getLongitude());
-        }else{
-            // can't get location
-            // GPS or Network is not enabled
-            // Ask user to enable GPS/network in settings
-            gps.showSettingsAlert();
-        }
-
-//        handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-
-//            }
-//        },500);
-
-//        initViews(getLayoutInflater().inflate(R.layout.custom_quiz_popup_layout,null));
-
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Question>>(){}.getType();
         questions = gson.fromJson(loadJSONFromAsset("questions.json"), listType);
-
-        //set proximity alerts
-        pendingIntents = new PendingIntent[questions.size()];
-        addProximityAlertCoordinates();
 
         //load first que
         question = questions.get(current_que_no);
@@ -192,6 +176,21 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
         else{
+
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+                    // Empty list for storing geofences.
+                    mGeofenceList = new ArrayList<Geofence>();
+
+                    // Kick off the request to build GoogleApiClient.
+                    buildGoogleApiClient();
+
+                    // Get the geofences used. Geofence data is hard coded in this sample.
+                    populateGeofenceList();
+
+//                }
+//            },500);
             loadQueImage();
         }
 
@@ -445,7 +444,6 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
     public void onBackPressed() {
 
         if (exit) {
-            removeAllProximityAlerts();
             ActivityCompat.finishAffinity(this); // finish activity and exit from the app
         } else {
             Toast.makeText(this, "Press Back again to exit",
@@ -460,38 +458,6 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         }
     }
 
-    public void removeAllProximityAlerts(){
-        if(pendingIntents.length > 0) {
-            for (int i = 0; i < questions.size(); i++) {
-                locationManager.removeProximityAlert(pendingIntents[i]);
-            }
-        }
-    }
-
-    public void addProximityAlertCoordinates(){
-        for(int i=0; i< questions.size(); i++){
-           addProximityAlert(new Location(questions.get(i).getQueNo(),
-                   Double.parseDouble(questions.get(i).getLatitude()),
-                   Double.parseDouble(questions.get(i).getLongitude()),
-                   1.0f));
-        }
-
-    }
-
-    public void addProximityAlert(Location location){
-        Intent intent = new Intent(Constants.ACTION_PROXIMITY_ALERT);
-        intent.putExtra("shop_id",location.get_ID());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, location.get_ID(), intent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
-        pendingIntents[location.get_ID()-1] = pendingIntent;
-
-        try {
-            locationManager.addProximityAlert(location.getLatitude(),
-                    location.getLongitude(), 100, -1, pendingIntent);
-        }catch (SecurityException se){
-            Toast.makeText(this,"Please enable GPS in your phone!", Toast.LENGTH_LONG).show();
-        }
-    }
 
     @SuppressLint("NewApi")
     @Override
@@ -512,5 +478,114 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
                 ActivityCompat.finishAffinity(this);
             }
         }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+        //add geo fences
+        addGeoFences();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onResult(@NonNull Status status) {
+        if (status.isSuccess()) {
+            Toast.makeText(
+                    this,
+                    "Geofences Added",
+                    Toast.LENGTH_LONG
+            ).show();
+        } else {
+            // Get the status code for the error and log it using a user-friendly message.
+//            String errorMessage = GeofenceErrorMessages.getErrorString(this,
+//                    status.getStatusCode());
+            Toast.makeText(
+                    this,
+                    "Geofences Not",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!mGoogleApiClient.isConnecting() || !mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    public void addGeoFences(){
+        if (!mGoogleApiClient.isConnected()) {
+            Toast.makeText(this, "Google API Client not connected!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        try {
+            LocationServices.GeofencingApi.addGeofences(
+                    mGoogleApiClient,
+                    getGeofencingRequest(),
+                    getGeofencePendingIntent()
+            ).setResultCallback(this); // Result processed in onResult().
+        } catch (SecurityException securityException) {
+            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
+        }
+    }
+
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(mGeofenceList);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling addgeoFences()
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    public void populateGeofenceList() {
+        for (Map.Entry<String, Location> entry : Constants.LANDMARKS.entrySet()) {
+            mGeofenceList.add(new Geofence.Builder()
+                    .setRequestId(entry.getKey())
+                    .setCircularRegion(
+                            entry.getValue().getLatitude(),
+                            entry.getValue().getLongitude(),
+                            Constants.GEOFENCE_RADIUS_IN_METERS
+                    )
+                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+        }
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+//        mGoogleApiClient.connect();
     }
 }
