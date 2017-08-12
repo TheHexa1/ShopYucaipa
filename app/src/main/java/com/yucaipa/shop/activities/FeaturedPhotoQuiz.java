@@ -2,8 +2,7 @@ package com.yucaipa.shop.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.app.PendingIntent;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,15 +12,11 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,34 +28,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yucaipa.shop.R;
-import com.yucaipa.shop.model.Location;
 import com.yucaipa.shop.model.Question;
-import com.yucaipa.shop.services.GeofenceTransitionsIntentService;
-import com.yucaipa.shop.utils.Constants;
+import com.yucaipa.shop.services.GeofenceMonitorService;
 import com.yucaipa.shop.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class FeaturedPhotoQuiz extends AppCompatActivity implements
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<Status> {
+public class FeaturedPhotoQuiz extends AppCompatActivity {
 
     TextView tv_show_hint,tv_ans_box,tv_hint;
     RadioGroup rg_ans;
@@ -70,7 +51,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity implements
     ImageView iv_que_img,iv_yucaipa_logo;
     Button btn_prev, btn_next;
     Question question;
-    List<Question> questions;
+    ArrayList<Question> questions;
     int current_que_no = 0;
     Utils utils;
     RadioGroup.OnCheckedChangeListener checkedChangeListener;
@@ -83,9 +64,6 @@ public class FeaturedPhotoQuiz extends AppCompatActivity implements
     boolean permission_flag = false;
 
     int PERMISSION_ALL = 321;
-
-    protected ArrayList<Geofence> mGeofenceList;
-    protected GoogleApiClient mGoogleApiClient;
 
     String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -128,12 +106,18 @@ public class FeaturedPhotoQuiz extends AppCompatActivity implements
         iv_yucaipa_logo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent accessIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://yucaipachamber.org/"));
+                String url;
+                if(iv_yucaipa_logo.getDrawable().equals(R.drawable.yucaipa_logo_quiz_1)){
+                    url = utils.getWebsiteUrl(111);
+                }else{
+                    url = utils.getWebsiteUrl(222);
+                }
+                Intent accessIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(accessIntent);
             }
         });
 
-        Glide.with(this).load(R.drawable.yucaipa_logo_quiz).into(iv_yucaipa_logo);
+        Glide.with(this).load(R.drawable.yucaipa_logo_quiz_1).into(iv_yucaipa_logo);
 /*
         Glide.with(this)
                 .load(utils.getDrawableResId(question.getQueImgDrawable()))
@@ -176,21 +160,10 @@ public class FeaturedPhotoQuiz extends AppCompatActivity implements
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
         else{
+            Intent intent = new Intent(this, GeofenceMonitorService.class);
+            intent.putParcelableArrayListExtra("questions_obj",questions);
+            startService(intent);
 
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-                    // Empty list for storing geofences.
-                    mGeofenceList = new ArrayList<Geofence>();
-
-                    // Kick off the request to build GoogleApiClient.
-                    buildGoogleApiClient();
-
-                    // Get the geofences used. Geofence data is hard coded in this sample.
-                    populateGeofenceList();
-
-//                }
-//            },500);
             loadQueImage();
         }
 
@@ -248,6 +221,12 @@ public class FeaturedPhotoQuiz extends AppCompatActivity implements
     }
 
     private void loadQueImage(){
+
+        if(question.getQueNo() % 2 != 0){
+            Glide.with(this).load(R.drawable.yucaipa_logo_quiz_1).into(iv_yucaipa_logo);
+        }else{
+            Glide.with(this).load(R.drawable.yucaipa_logo_quiz_2).into(iv_yucaipa_logo);
+        }
 
         Glide.with(this)
                 .load(utils.getDrawableResId(question.getQueImgDrawable()))
@@ -330,7 +309,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity implements
             dialogInterface.dismiss();
 
             message = "Correct!";
-            btn_label = "Navigate";
+            btn_label = "Take me there";
             builder.setView(view);
 
             if(question.getQueNo() == 2){
@@ -384,8 +363,15 @@ public class FeaturedPhotoQuiz extends AppCompatActivity implements
         });
 
         final AlertDialog alert =  builder.create();
-
         alert.show();
+/*
+        //setButton sizes
+        if(message.equals("Correct!")) {
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(R.dimen.alert_dialog_btn_size);
+            alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextSize(R.dimen.alert_dialog_btn_size);
+        }
+        alert.getButton(AlertDialog.BUTTON_NEUTRAL).setTextSize(R.dimen.alert_dialog_btn_size);*/
+
     }
 
     public void showHintAnsChoicePopUp(int flag){
@@ -435,9 +421,23 @@ public class FeaturedPhotoQuiz extends AppCompatActivity implements
 
         final AlertDialog alert =  builder.create();
 
+        alert.show();
+
+        alert.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button btnPositive = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+                btnPositive.setTextSize(50);
+
+//                Button btnNegative = alert.getButton(Dialog.BUTTON_NEGATIVE);
+//                btnNegative.setTextSize(TEXT_SIZE);
+            }
+        });
+
+//        alert.getButton(DialogInterface.BUTTON_POSITIVE).setTextSize(R.dimen.alert_dialog_btn_size);
+
         dialogInterface = alert;
 
-        alert.show();
     }
 
     @Override
@@ -478,114 +478,5 @@ public class FeaturedPhotoQuiz extends AppCompatActivity implements
                 ActivityCompat.finishAffinity(this);
             }
         }
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-        //add geo fences
-        addGeoFences();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    @Override
-    public void onResult(@NonNull Status status) {
-        if (status.isSuccess()) {
-            Toast.makeText(
-                    this,
-                    "Geofences Added",
-                    Toast.LENGTH_LONG
-            ).show();
-        } else {
-            // Get the status code for the error and log it using a user-friendly message.
-//            String errorMessage = GeofenceErrorMessages.getErrorString(this,
-//                    status.getStatusCode());
-            Toast.makeText(
-                    this,
-                    "Geofences Not",
-                    Toast.LENGTH_LONG
-            ).show();
-        }
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!mGoogleApiClient.isConnecting() || !mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    public void addGeoFences(){
-        if (!mGoogleApiClient.isConnected()) {
-            Toast.makeText(this, "Google API Client not connected!", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        try {
-            LocationServices.GeofencingApi.addGeofences(
-                    mGoogleApiClient,
-                    getGeofencingRequest(),
-                    getGeofencePendingIntent()
-            ).setResultCallback(this); // Result processed in onResult().
-        } catch (SecurityException securityException) {
-            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
-        }
-    }
-
-    private GeofencingRequest getGeofencingRequest() {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(mGeofenceList);
-        return builder.build();
-    }
-
-    private PendingIntent getGeofencePendingIntent() {
-        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
-        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling addgeoFences()
-        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    public void populateGeofenceList() {
-        for (Map.Entry<String, Location> entry : Constants.LANDMARKS.entrySet()) {
-            mGeofenceList.add(new Geofence.Builder()
-                    .setRequestId(entry.getKey())
-                    .setCircularRegion(
-                            entry.getValue().getLatitude(),
-                            entry.getValue().getLongitude(),
-                            Constants.GEOFENCE_RADIUS_IN_METERS
-                    )
-                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                            Geofence.GEOFENCE_TRANSITION_EXIT)
-                    .build());
-        }
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-//        mGoogleApiClient.connect();
     }
 }

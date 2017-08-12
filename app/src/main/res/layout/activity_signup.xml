@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/signup_root_padding">
 
     <ImageView
         android:id="@+id/iv_header_logo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/yucaipa_logo_trans" />
+        android:layout_height="wrap_content" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="@dimen/field_margin_top">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/tiet_user_email"
@@ -25,14 +25,15 @@
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:textColor="@color/primary_text"
-            android:textColorLink="#000" />
+            android:textColorLink="#000"
+            android:textSize="@dimen/field_text_size" />
 
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="@dimen/field_margin_top">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/tiet_user_phone_no"
@@ -42,18 +43,19 @@
             android:inputType="number"
             android:maxLength="10"
             android:textColor="@color/primary_text"
-            android:textColorLink="#000" />
+            android:textColorLink="#000"
+            android:textSize="@dimen/field_text_size" />
     </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/btn_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/btn_margin_top"
         android:background="@color/primary"
         android:text="Sign Up"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="@dimen/btn_text_size"
         android:textStyle="bold" />
 
 </LinearLayout>

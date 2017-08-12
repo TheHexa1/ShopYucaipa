@@ -1,12 +1,17 @@
 package com.yucaipa.shop.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.yucaipa.shop.R;
+
+import java.io.Serializable;
 
 /**
  * Created by Vivek_Hexa on 16-Jul-17.
  */
 
-public class Question {
+public class Question implements Parcelable {
 
     private int queNo;
     private String queName;
@@ -22,6 +27,33 @@ public class Question {
     private String ansImgDrawable;
     private String latitude;
     private String longitude;
+
+    protected Question(Parcel in) {
+        queNo = in.readInt();
+        queName = in.readString();
+        queText = in.readString();
+        hint = in.readString();
+        choice1 = in.readString();
+        choice2 = in.readString();
+        choice3 = in.readString();
+        ansChoice = in.readInt();
+        queImgDrawable = in.readString();
+        ansImgDrawable = in.readString();
+        latitude = in.readString();
+        longitude = in.readString();
+    }
+
+    public static final Creator<Question> CREATOR = new Creator<Question>() {
+        @Override
+        public Question createFromParcel(Parcel in) {
+            return new Question(in);
+        }
+
+        @Override
+        public Question[] newArray(int size) {
+            return new Question[size];
+        }
+    };
 
     public int getQueNo() {
         return queNo;
@@ -117,5 +149,26 @@ public class Question {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(queNo);
+        dest.writeString(queName);
+        dest.writeString(queText);
+        dest.writeString(hint);
+        dest.writeString(choice1);
+        dest.writeString(choice2);
+        dest.writeString(choice3);
+        dest.writeInt(ansChoice);
+        dest.writeString(queImgDrawable);
+        dest.writeString(ansImgDrawable);
+        dest.writeString(latitude);
+        dest.writeString(longitude);
     }
 }

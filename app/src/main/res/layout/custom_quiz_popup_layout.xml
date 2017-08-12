@@ -2,8 +2,8 @@
     android:id="@+id/rl_hint_ans"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
     android:background="@android:color/white"
+    android:padding="@dimen/pop_up_root_padding"
     android:visibility="visible">
 
     <LinearLayout
@@ -11,23 +11,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:gravity="center"
+        android:gravity="left"
         android:orientation="horizontal"
-        android:padding="50dp">
+        android:padding="@dimen/hint_box_padding">
 
         <TextView
             android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hint :"
+            android:textSize="@dimen/hint_text_size"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="ok google" />
+            android:layout_marginLeft="@dimen/hint_text_margin_left"
+            android:text="It is hint!"
+            android:textSize="@dimen/hint_text_size" />
     </LinearLayout>
 
     <LinearLayout
@@ -40,37 +42,43 @@
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/ans_title_margin_top"
             android:gravity="center"
             android:text="Answer(Select one)"
-            android:textColor="#000" />
+            android:textColor="#000"
+            android:textSize="@dimen/ans_title_text_size" />
 
         <RadioGroup
             android:id="@+id/rg_ans"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="16dp">
+            android:layout_marginLeft="@dimen/radio_group_margin"
+            android:layout_marginRight="@dimen/radio_group_margin"
+            android:layout_marginTop="@dimen/radio_group_margin">
 
             <RadioButton
                 android:id="@+id/rd_choice_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="RadioButton" />
+                android:text="RadioButton"
+                android:textSize="@dimen/radio_button_text_size" />
 
             <RadioButton
                 android:id="@+id/rd_choice_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="RadioButton" />
+                android:text="RadioButton"
+                android:textSize="@dimen/radio_button_text_size" />
 
             <RadioButton
                 android:id="@+id/rd_choice_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="RadioButton" />
+                android:text="RadioButton"
+                android:textSize="@dimen/radio_button_text_size" />
 
         </RadioGroup>
 

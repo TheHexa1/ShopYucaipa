@@ -16,12 +16,13 @@
 
         <ImageView
             android:id="@+id/iv_yucaipa_logo"
-            android:layout_width="250dp"
-            android:layout_height="150dp"
+            android:layout_width="@dimen/yucaipa_logo_width"
+            android:layout_height="@dimen/yucaipa_logo_height"
             android:layout_gravity="center"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginBottom="@dimen/yucaipa_logo_margin_top_bottom"
+            android:layout_marginLeft="@dimen/yucaipa_logo_margin_left_right"
+            android:layout_marginRight="@dimen/yucaipa_logo_margin_left_right"
+            android:layout_marginTop="@dimen/yucaipa_logo_margin_top_bottom" />
 
         <!--<TextView
             android:id="@+id/tv_que_text"
@@ -36,7 +37,7 @@
         <ImageView
             android:id="@+id/iv_que_img"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="@dimen/que_img_height"
             android:scaleType="centerInside" />
 
         <LinearLayout
@@ -50,10 +51,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="@dimen/que_hint_ans_padding"
                 android:text="Give me a hint"
                 android:textColor="@color/accent"
-                android:textSize="14sp" />
+                android:textSize="@dimen/que_hint_ans_font_size" />
 
             <TextView
                 android:id="@+id/tv_ans_box"
@@ -61,10 +62,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="@dimen/que_hint_ans_padding"
                 android:text="I've got the answer"
                 android:textColor="@color/accent"
-                android:textSize="14sp" />
+                android:textSize="@dimen/que_hint_ans_font_size" />
         </LinearLayout>
 
         <LinearLayout
@@ -75,23 +76,25 @@
             <Button
                 android:id="@+id/btn_prev"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginLeft="@dimen/btn_left_right_margin"
                 android:layout_weight="1"
                 android:background="@color/primary"
                 android:text="Previous"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/que_hint_ans_font_size" />
 
             <Button
                 android:id="@+id/btn_next"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="16dp"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginLeft="@dimen/button_left"
+                android:layout_marginRight="@dimen/btn_left_right_margin"
                 android:layout_weight="1"
                 android:background="@color/primary"
                 android:text="Next"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/que_hint_ans_font_size" />
 
         </LinearLayout>
 

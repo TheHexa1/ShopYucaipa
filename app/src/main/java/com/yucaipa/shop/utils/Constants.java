@@ -1,5 +1,6 @@
 package com.yucaipa.shop.utils;
 
+import com.google.android.gms.location.Geofence;
 import com.yucaipa.shop.model.Location;
 
 import java.util.HashMap;
@@ -20,10 +21,10 @@ public class Constants {
     public static String ACTION_PROXIMITY_ALERT = "com.yucaipa.shop";
 
 
-    public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = 12 * 60 * 60 * 1000;
-    public static final float GEOFENCE_RADIUS_IN_METERS = 100;
+    public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = Geofence.NEVER_EXPIRE; //never expires
+    public static final float GEOFENCE_RADIUS_IN_METERS = 500;
 
-    public static final HashMap<String, Location> LANDMARKS = new HashMap<String, Location>();
+    /*public static final HashMap<String, Location> LANDMARKS = new HashMap<String, Location>();
     static {
         // San Francisco International Airport.
         LANDMARKS.put("Moscone South", new Location(1,23.228876,72.632656,100));
@@ -33,5 +34,5 @@ public class Constants {
 
         // Test
         LANDMARKS.put("SFO", new Location(1,13.13,13.31,100));
-    }
+    }*/
 }

@@ -6,6 +6,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -17,6 +18,7 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.bumptech.glide.Glide;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.yucaipa.shop.R;
 import com.yucaipa.shop.utils.Constants;
@@ -49,6 +51,8 @@ public class SignupActivity extends AppCompatActivity {
 
             tiet_user_email = (TextInputEditText) findViewById(R.id.tiet_user_email);
             tiet_user_phone_no = (TextInputEditText) findViewById(R.id.tiet_user_phone_no);
+
+            Glide.with(this).load(R.drawable.yucaipa_logo_sign_up).into((ImageView) findViewById(R.id.iv_header_logo));
 
             findViewById(R.id.btn_signup).setOnClickListener(new View.OnClickListener() {
                 @Override

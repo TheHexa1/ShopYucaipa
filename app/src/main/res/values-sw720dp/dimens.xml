@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--featured_photo_quiz-->
+    <dimen name="yucaipa_logo_width">550dp</dimen>
+    <dimen name="yucaipa_logo_height">250dp</dimen>
+    <dimen name="yucaipa_logo_margin_top_bottom">30dp</dimen>
+    <dimen name="yucaipa_logo_margin_left_right">80dp</dimen>
+
+    <dimen name="que_img_height">600dp</dimen>
+
+    <dimen name="que_hint_ans_padding">30dp</dimen>
+    <dimen name="que_hint_ans_font_size">36sp</dimen>
+    <dimen name="btn_left_right_margin">40dp</dimen>
+    <dimen name="btn_height">80dp</dimen>
+    <dimen name="button_left">50dp</dimen>
+
+    <!--activity_signup-->
+    <dimen name="signup_root_padding">32dp</dimen>
+
+    <dimen name="field_margin_top">40dp</dimen>
+    <dimen name="field_text_size">36sp</dimen>
+
+    <dimen name="btn_margin_top">60dp</dimen>
+    <dimen name="btn_text_size">40sp</dimen>
+
+    <!--custom_notification-->
+    <dimen name="notification_image_width_height">75dp</dimen>
+    <dimen name="notification_root_padding">10dp</dimen>
+    <dimen name="noti_content_margin_left">15dp</dimen>
+    <dimen name="noti_font_size_title">18sp</dimen>
+    <dimen name="noti_font_size_time">20sp</dimen>
+    <dimen name="noti_font_size_name_body">16sp</dimen>
+    <dimen name="noti_action_padding">10dp</dimen>
+    <dimen name="noti_action_text_size">18sp</dimen>
+
+    <!--custom_quiz_popup-->
+    <dimen name="pop_up_root_padding">32dp</dimen>
+
+    <dimen name="ans_title_margin_top">16dp</dimen>
+    <dimen name="ans_title_text_size">25sp</dimen>
+
+    <dimen name="hint_box_padding">16dp</dimen>
+    <dimen name="hint_text_margin_left">10dp</dimen>
+    <dimen name="hint_text_size">25sp</dimen>
+
+    <dimen name="radio_group_margin">32dp</dimen>
+    <dimen name="radio_button_text_size">25sp</dimen>
+
+    <dimen name="alert_dialog_btn_size">30dp</dimen>
+
+</resources>

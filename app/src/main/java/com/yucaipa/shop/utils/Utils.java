@@ -121,6 +121,23 @@ public class Utils extends Application {
         }
     }
 
+    public String getNotificationText(int flag){
+        switch (flag){
+            case R.drawable.ans1:
+                return "Clock Chalet Cards and Gifts";
+            case R.drawable.ans2:
+                return "Steakhouse and Sports Bar";
+            case R.drawable.ans3:
+                return "The Inland Empires Premier Lazer Tag";
+            case R.drawable.ans4:
+                return "Yucaipa's Landscape Headquarters";
+            case R.drawable.ans5:
+                return "The Best Prices Online-The Best Service On-site";
+            default:
+                return "You are nearby to";
+        }
+    }
+
     public String getTelephoneNumber(int flag){
         switch (flag){
             case R.drawable.ans1:
@@ -150,6 +167,10 @@ public class Utils extends Application {
                 return "http://sunshinegrowersnursery.com/";
             case R.drawable.ans5:
                 return "https://uptown-pet.com/";
+            case 111:
+                return "http://yucaipachamber.org/Yucaipa-First";
+            case 222:
+                return "http://yucaipachamber.org/Explore-Yucaipa";
             default:
                 return "http://yucaipachamber.org/";
         }
