@@ -7,21 +7,33 @@
     android:layout_height="match_parent"
     android:background="#000">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         tools:context="com.yucaipa.shop.activities.FeaturedPhotoQuiz">
 
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/home_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        <!--<android.support.v7.widget.Toolbar
+            android:id="@+id/home_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />-->
 
         <ImageView
             android:id="@+id/iv_yucaipa_logo"
             android:layout_width="@dimen/yucaipa_logo_width"
             android:layout_height="@dimen/yucaipa_logo_height"
-            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="false"
             android:layout_marginBottom="@dimen/yucaipa_logo_margin_top_bottom"
-            android:layout_marginLeft="@dimen/yucaipa_logo_margin_left_right"
-            android:layout_marginRight="@dimen/yucaipa_logo_margin_left_right"
             android:layout_marginTop="@dimen/yucaipa_logo_margin_top_bottom" />
 
         <!--<TextView
@@ -38,11 +50,14 @@
             android:id="@+id/iv_que_img"
             android:layout_width="match_parent"
             android:layout_height="@dimen/que_img_height"
+            android:layout_below="@+id/iv_yucaipa_logo"
             android:scaleType="centerInside" />
 
         <LinearLayout
+            android:id="@+id/ll_hint_ans"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/iv_que_img"
             android:orientation="horizontal">
 
             <TextView
@@ -69,8 +84,10 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_buttons"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/ll_hint_ans"
             android:orientation="horizontal">
 
             <Button
@@ -98,6 +115,6 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </ScrollView>

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
@@ -17,6 +18,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -58,6 +62,9 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
     boolean exit = false;
     AlertDialog dialogInterface;
     String message = "", btn_label = "";
+    int shop_id;
+
+    Toolbar toolbar;
 
     LocationManager locationManager;
 
@@ -78,10 +85,13 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Question>>(){}.getType();
-        questions = gson.fromJson(loadJSONFromAsset("questions.json"), listType);
+        questions = gson.fromJson(utils.loadJSONFromAsset("questions.json"), listType);
 
         //load first que
         question = questions.get(current_que_no);
+
+        toolbar = (Toolbar) findViewById(R.id.home_toolbar);
+        setSupportActionBar(toolbar);
 
         tv_ans_box = (TextView) findViewById(R.id.tv_ans_box);
         tv_ans_box.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +117,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String url;
-                if(iv_yucaipa_logo.getDrawable().equals(R.drawable.yucaipa_logo_quiz_1)){
+                if(question.getQueNo() % 2 != 0){
                     url = utils.getWebsiteUrl(111);
                 }else{
                     url = utils.getWebsiteUrl(222);
@@ -160,9 +170,18 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
         else{
-            Intent intent = new Intent(this, GeofenceMonitorService.class);
-            intent.putParcelableArrayListExtra("questions_obj",questions);
-            startService(intent);
+
+            SharedPreferences myPref = getSharedPreferences("com.yucaipa.shop",MODE_PRIVATE);
+
+            if(myPref.getBoolean("isFirstRun",true)){
+
+                Intent intent = new Intent(this, GeofenceMonitorService.class);
+                intent.putParcelableArrayListExtra("questions_obj",questions);
+                startService(intent);
+
+                myPref.edit().putBoolean("isNotificationTurnedOn", true).apply();
+                myPref.edit().putBoolean("isFirstRun", false).apply();
+            }
 
             loadQueImage();
         }
@@ -222,6 +241,8 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
     private void loadQueImage(){
 
+        shop_id = utils.getDrawableResId("ans"+question.getQueNo());
+
         if(question.getQueNo() % 2 != 0){
             Glide.with(this).load(R.drawable.yucaipa_logo_quiz_1).into(iv_yucaipa_logo);
         }else{
@@ -274,31 +295,6 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         return ansChoice == selectedChoice;
     }
 
-    public String loadJSONFromAsset(String filename) {
-        String json = null;
-        try {
-
-            InputStream is = getAssets().open(filename);
-
-            int size = is.available();
-
-            byte[] buffer = new byte[size];
-
-            is.read(buffer);
-
-            is.close();
-
-            json = new String(buffer, "UTF-8");
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return json;
-
-    }
-
     public void showAnsPopUp(int selectedChoice){
 
         View view = getLayoutInflater().inflate(R.layout.image_layout,null);
@@ -309,7 +305,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             dialogInterface.dismiss();
 
             message = "Correct!";
-            btn_label = "Take me there";
+            btn_label = "Take me to it";
             builder.setView(view);
 
             if(question.getQueNo() == 2){
@@ -352,7 +348,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
                 if(message.equals("Correct!")){
                     Intent guidanceIntent = new Intent(android.content.Intent.ACTION_VIEW,
-                            Uri.parse("https://www.google.com/maps/dir/?api=1&origin=my location&destination=Frisch's Clock Chalet & Gift Shop&travelmode=driving"));
+                            Uri.parse("https://www.google.com/maps/dir/?api=1&origin=my location&destination="+utils.getLocation(shop_id)+"&travelmode=driving"));
         /*https://www.google.com/maps/dir/?api=1&origin=Uptown Pets, 35039 Yucaipa Blvd, Yucaipa, CA 92399&destination=Frisch's Clock Chalet & Gift Shop&travelmode=driving*/
                     guidanceIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(guidanceIntent);
@@ -391,6 +387,19 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         String message = "", btn_label = "";
 
         builder.setView(view);
+
+        if(flag == 0){
+            builder.setNeutralButton("Take me to it", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent guidanceIntent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse("https://www.google.com/maps/dir/?api=1&origin=my location&destination="+utils.getLocation(shop_id)+"&travelmode=driving"));
+        /*https://www.google.com/maps/dir/?api=1&origin=Uptown Pets, 35039 Yucaipa Blvd, Yucaipa, CA 92399&destination=Frisch's Clock Chalet & Gift Shop&travelmode=driving*/
+                    guidanceIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(guidanceIntent);
+                }
+            });
+        }
 
         /*if(isAnswerCorrect(question.getAnsChoice(), selectedChoice)){
             message = "Correct!";
@@ -438,6 +447,24 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
         dialogInterface = alert;
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.quiz_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                Intent i = new Intent(this, SettingsActivity.class);
+                i.putParcelableArrayListExtra("questions_obj",questions);
+                startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

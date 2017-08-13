@@ -77,11 +77,11 @@ public class GeofenceMonitorService extends Service implements
     @Override
     public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
-            Toast.makeText(
+            /*Toast.makeText(
                     this,
                     "Geofences Added",
                     Toast.LENGTH_SHORT
-            ).show();
+            ).show();*/
         } else {
             // Get the status code for the error and log it using a user-friendly message.
             Log.i("Error:","Error in adding geo fences");

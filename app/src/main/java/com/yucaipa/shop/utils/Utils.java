@@ -18,6 +18,8 @@ import com.yucaipa.shop.R;
 import com.yucaipa.shop.activities.FeaturedPhotoQuiz;
 import com.yucaipa.shop.activities.SignupActivity;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 
 /**
@@ -196,5 +198,30 @@ public class Utils extends Application {
     public String getCurrentTime() {
         String delegate = "hh:mm aaa";
         return (String) DateFormat.format(delegate, Calendar.getInstance().getTime());
+    }
+
+    public String loadJSONFromAsset(String filename) {
+        String json = null;
+        try {
+
+            InputStream is = getAssets().open(filename);
+
+            int size = is.available();
+
+            byte[] buffer = new byte[size];
+
+            is.read(buffer);
+
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return json;
+
     }
 }
