@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -72,8 +73,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
     int PERMISSION_ALL = 321;
 
-    String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION};
+    String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +171,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         }
         else{
 
-            SharedPreferences myPref = getSharedPreferences("com.yucaipa.shop",MODE_PRIVATE);
+            /*SharedPreferences myPref = getSharedPreferences("com.yucaipa.shop",MODE_PRIVATE);
 
             if(myPref.getBoolean("isFirstRun",true)){
 
@@ -181,7 +181,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
                 myPref.edit().putBoolean("isNotificationTurnedOn", true).apply();
                 myPref.edit().putBoolean("isFirstRun", false).apply();
-            }
+            }*/
 
             loadQueImage();
         }
@@ -252,6 +252,14 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         Glide.with(this)
                 .load(utils.getDrawableResId(question.getQueImgDrawable()))
                 .into(iv_que_img);
+
+        //temporary
+        /*findViewById(R.id.iv_que_img).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FeaturedPhotoQuiz.this, RateYourVisitActivity.class));
+            }
+        });*/
 //        rg_ans.setOnCheckedChangeListener(null);
 /*
         rd_choice_1.setChecked(false);
@@ -308,11 +316,11 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             btn_label = "Take me to it";
             builder.setView(view);
 
-            if(question.getQueNo() == 2){
+            /*if(question.getQueNo() == 2){
                 view.findViewById(R.id.iv_ans_logo).setBackgroundColor(Color.BLACK);
             }else{
                 view.findViewById(R.id.iv_ans_logo).setBackgroundColor(Color.WHITE);
-            }
+            }*/
 
             Glide.with(this)
                     .load(utils.getDrawableResId(question.getAnsImgDrawable()))
@@ -485,11 +493,9 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         }
     }
 
-
-    @SuppressLint("NewApi")
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if(requestCode == PERMISSION_ALL){
 //            permission_flag = true;
@@ -497,13 +503,21 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             //        ask for permissions in newer version of android.
             permission_flag = hasPermissions(this, PERMISSIONS);
 
-            if(permission_flag){
+            if(!permission_flag){
+                Toast.makeText(getApplicationContext(),"You need to allow all the required permissions to use this app!", Toast.LENGTH_LONG)
+                        .show();
+                ActivityCompat.finishAffinity(this);
+            }else{
                 loadQueImage();
             }
-            else{Toast.makeText(getApplicationContext(),"You need to allow all the required permissions to use this app!", Toast.LENGTH_LONG)
-                    .show();
-                ActivityCompat.finishAffinity(this);
-            }
         }
+
     }
+
+    /*@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }*/
 }

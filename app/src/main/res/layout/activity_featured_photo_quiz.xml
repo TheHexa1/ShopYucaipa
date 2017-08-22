@@ -46,11 +46,22 @@
             android:textColor="@android:color/white"
             android:textSize="18sp" />-->
 
+        <TextView
+            android:id="@+id/tv_que"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_yucaipa_logo"
+            android:layout_marginBottom="@dimen/field_margin_top"
+            android:gravity="center"
+            android:text="Where Am I?"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/que_hint_ans_font_size" />
+
         <ImageView
             android:id="@+id/iv_que_img"
             android:layout_width="match_parent"
             android:layout_height="@dimen/que_img_height"
-            android:layout_below="@+id/iv_yucaipa_logo"
+            android:layout_below="@+id/tv_que"
             android:scaleType="centerInside" />
 
         <LinearLayout

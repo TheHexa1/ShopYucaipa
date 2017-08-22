@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,11 +40,12 @@ public class GeofenceMonitorService extends Service implements
     protected GoogleApiClient mGoogleApiClient;
     List<Question> questionList;
 
+    Handler handler = new Handler();
     @Override
     public void onCreate() {
         super.onCreate();
 
-        Log.i("Came in service","Of course");
+        Log.i("Service Started","Of course");
 
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<Geofence>();
@@ -110,6 +112,9 @@ public class GeofenceMonitorService extends Service implements
         if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+
+        stopSelf();
+        Log.i("Service Stopped","Yeah");
     }
 
     public void addGeoFences(){
@@ -131,7 +136,8 @@ public class GeofenceMonitorService extends Service implements
 
     private GeofencingRequest getGeofencingRequest() {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER
+                | GeofencingRequest.INITIAL_TRIGGER_DWELL);
         builder.addGeofences(mGeofenceList);
         return builder.build();
     }
@@ -153,7 +159,8 @@ public class GeofenceMonitorService extends Service implements
                     )
                     .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                            Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
+                    .setLoiteringDelay(60000) //if user spends 5 mins then rate your visit notification
                     .build());
         }
     }

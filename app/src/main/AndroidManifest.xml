@@ -56,7 +56,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.SettingsActivity"></activity>
+        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.RateYourVisitActivity"></activity>
     </application>
 
 </manifest>

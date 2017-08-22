@@ -204,7 +204,7 @@ public class Utils extends Application {
         String json = null;
         try {
 
-            InputStream is = getAssets().open(filename);
+            InputStream is = context.getAssets().open(filename);
 
             int size = is.available();
 

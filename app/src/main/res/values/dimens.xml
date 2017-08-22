@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--featured_photo_quiz-->
-    <dimen name="yucaipa_logo_width">250dp</dimen>
-    <dimen name="yucaipa_logo_height">150dp</dimen>
+    <dimen name="yucaipa_logo_width">200dp</dimen>
+    <dimen name="yucaipa_logo_height">120dp</dimen>
     <dimen name="yucaipa_logo_margin_top_bottom">16dp</dimen>
     <dimen name="yucaipa_logo_margin_left_right">30dp</dimen>
 
-    <dimen name="que_img_height">300dp</dimen>
+    <dimen name="que_img_height">280dp</dimen>
 
     <dimen name="que_hint_ans_padding">10dp</dimen>
     <dimen name="que_hint_ans_font_size">14sp</dimen>

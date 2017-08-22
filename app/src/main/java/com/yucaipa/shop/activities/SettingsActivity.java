@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.yucaipa.shop.R;
 import com.yucaipa.shop.model.Question;
 import com.yucaipa.shop.services.GeofenceMonitorService;
+import com.yucaipa.shop.services.GeofenceTransitionsIntentService;
 
 import java.util.ArrayList;
 
@@ -70,11 +71,14 @@ public class SettingsActivity extends AppCompatActivity {
                     startService(i);
 
                     myPref.edit().putBoolean("isNotificationTurnedOn", true).apply();
-                    Toast.makeText(SettingsActivity.this,"You will get nearby businesses notification",Toast.LENGTH_LONG).show();
+                    Toast.makeText(SettingsActivity.this,"You will get nearby businesses notifications",Toast.LENGTH_LONG).show();
                 }else{
+
                     stopService(i);
+
+                    stopService(new Intent(SettingsActivity.this, GeofenceTransitionsIntentService.class));
                     myPref.edit().putBoolean("isNotificationTurnedOn", false).apply();
-                    Toast.makeText(SettingsActivity.this,"You will no longer get nearby businesses notification",Toast.LENGTH_LONG).show();
+                    Toast.makeText(SettingsActivity.this,"You will no longer get nearby businesses notifications",Toast.LENGTH_LONG).show();
                 }
             }
         });

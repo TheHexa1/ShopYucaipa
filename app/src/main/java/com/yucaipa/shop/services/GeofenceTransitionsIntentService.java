@@ -21,6 +21,7 @@ import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
 import com.yucaipa.shop.R;
 import com.yucaipa.shop.activities.FeaturedPhotoQuiz;
+import com.yucaipa.shop.activities.RateYourVisitActivity;
 import com.yucaipa.shop.utils.Utils;
 
 import java.util.ArrayList;
@@ -60,18 +61,23 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
             for (int i = 0; i < triggerList.size(); i++) {
-                sendNotification(triggerList.get(i).getRequestId());
+                showProximityNotification(triggerList.get(i).getRequestId());
             }
+            Log.i("ENTER CALLEd?","Of course");
         }else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT){
 
         }else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL){
             //show rate your visit notification
+            for (int i = 0; i < triggerList.size(); i++) {
+                showRateYourVisitNotification(triggerList.get(i).getRequestId());
+            }
+            Log.i("DWELL called?","Of course");
         }
 
-        Log.i("Noti called?","Of course");
+
     }
 
-    private void sendNotification(String str_shop_id) {
+    private void showProximityNotification(String str_shop_id) {
 
         shop_id = utils.getDrawableResId("ans"+str_shop_id);
 
@@ -112,6 +118,34 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 .setPriority(Notification.PRIORITY_MAX)
                 .setCustomContentView(bigView)
                 .setCustomBigContentView(bigView);
+
+        NotificationManager notificationManager =
+                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(shop_id, notificationBuilder.build());
+    }
+
+    private void showRateYourVisitNotification(String str_shop_id){
+
+        shop_id = utils.getDrawableResId("ans"+str_shop_id);
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        Intent rateYourVisitIntent = new Intent(this, RateYourVisitActivity.class);
+        rateYourVisitIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent pendingIntent;
+        pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, rateYourVisitIntent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(shop_id)
+                .setAutoCancel(false)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setContentTitle(utils.getShopName(shop_id))
+                .setContentText("Rate Your visit to this shop");
 
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
