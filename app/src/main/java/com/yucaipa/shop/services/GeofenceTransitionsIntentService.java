@@ -69,7 +69,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL){
             //show rate your visit notification
             for (int i = 0; i < triggerList.size(); i++) {
-                showRateYourVisitNotification(triggerList.get(i).getRequestId());
+                showRateYourVisitNotification(triggerList.get(i).getRequestId().split("_")[0]);
             }
             Log.i("DWELL called?","Of course");
         }
@@ -132,20 +132,42 @@ public class GeofenceTransitionsIntentService extends IntentService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         Intent rateYourVisitIntent = new Intent(this, RateYourVisitActivity.class);
-        rateYourVisitIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        rateYourVisitIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        rateYourVisitIntent.putExtra("shop_id",shop_id);
 
         PendingIntent pendingIntent;
-        pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, rateYourVisitIntent,
-                PendingIntent.FLAG_ONE_SHOT);
+        pendingIntent = PendingIntent.getActivity(this, shop_id /* Request code */, rateYourVisitIntent,0);
+
+        RemoteViews bigView = new RemoteViews(getPackageName(),
+                R.layout.custom_rate_notification_layout);
+
+        // notification's icon
+        bigView.setImageViewResource(R.id.notifiation_image, shop_id);
+        // shop's title
+        bigView.setTextViewText(R.id.shop_name, utils.getShopName(shop_id));
+        // notification's content
+        bigView.setTextViewText(R.id.tv_body, "Rate your visit to this shop");
+        // notification's time
+        bigView.setTextViewText(R.id.tv_time, utils.getCurrentTime());
+
+        /*Intent guidanceIntent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse("https://www.google.com/maps/dir/?api=1&origin=my location&destination="+utils.getLocation(shop_id)+"&travelmode=driving"));
+        guidanceIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);*/
+
+        /*Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+utils.getTelephoneNumber(shop_id)));
+        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        bigView.setOnClickPendingIntent(R.id.tv_guidance, PendingIntent.getActivity(this,0,guidanceIntent,0));
+        bigView.setOnClickPendingIntent(R.id.tv_call, PendingIntent.getActivity(this,1,callIntent,0));*/
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(shop_id)
-                .setAutoCancel(false)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
                 .setPriority(Notification.PRIORITY_MAX)
-                .setContentTitle(utils.getShopName(shop_id))
-                .setContentText("Rate Your visit to this shop");
+                .setCustomContentView(bigView)
+                .setCustomBigContentView(bigView);
 
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);

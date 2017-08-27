@@ -18,6 +18,8 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.yucaipa.shop.model.Location;
 import com.yucaipa.shop.model.Question;
 import com.yucaipa.shop.utils.Constants;
@@ -84,9 +86,10 @@ public class GeofenceMonitorService extends Service implements
                     "Geofences Added",
                     Toast.LENGTH_SHORT
             ).show();*/
+            Log.i("Success:","Successfully added/removed geo fences");
         } else {
             // Get the status code for the error and log it using a user-friendly message.
-            Log.i("Error:","Error in adding geo fences");
+            Log.i("Error:","Error in adding/removing geo fences");
         }
     }
 
@@ -109,10 +112,13 @@ public class GeofenceMonitorService extends Service implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, getGeofencePendingIntent())
+                .setResultCallback(this);
+
         if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
-
         stopSelf();
         Log.i("Service Stopped","Yeah");
     }
@@ -149,6 +155,8 @@ public class GeofenceMonitorService extends Service implements
     }
 
     public void populateGeofenceList() {
+
+        //offers/proximity geofences
         for (int i=0; i<questionList.size(); i++) {
             mGeofenceList.add(new Geofence.Builder()
                     .setRequestId(questionList.get(i).getQueNo()+"")
@@ -159,7 +167,20 @@ public class GeofenceMonitorService extends Service implements
                     )
                     .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                            Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
+                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+        }
+        //rate your visit/dwell geofences
+        for (int i=0; i<questionList.size(); i++) {
+            mGeofenceList.add(new Geofence.Builder()
+                    .setRequestId(questionList.get(i).getQueNo()+"_"+i)
+                    .setCircularRegion(
+                            Double.parseDouble(questionList.get(i).getLatitude()),
+                            Double.parseDouble(questionList.get(i).getLongitude()),
+                            Constants.GEOFENCE_DWELL_RADIUS_IN_METERS
+                    )
+                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
                     .setLoiteringDelay(60000) //if user spends 5 mins then rate your visit notification
                     .build());
         }

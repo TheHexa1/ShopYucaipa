@@ -76,7 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     stopService(i);
 
-                    stopService(new Intent(SettingsActivity.this, GeofenceTransitionsIntentService.class));
+//                    stopService(new Intent(SettingsActivity.this, GeofenceTransitionsIntentService.class));
                     myPref.edit().putBoolean("isNotificationTurnedOn", false).apply();
                     Toast.makeText(SettingsActivity.this,"You will no longer get nearby businesses notifications",Toast.LENGTH_LONG).show();
                 }

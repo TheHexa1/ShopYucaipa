@@ -52,7 +52,7 @@ public class SignupActivity extends AppCompatActivity {
             tiet_user_email = (TextInputEditText) findViewById(R.id.tiet_user_email);
             tiet_user_phone_no = (TextInputEditText) findViewById(R.id.tiet_user_phone_no);
 
-            Glide.with(this).load(R.drawable.yucaipa_logo_sign_up).into((ImageView) findViewById(R.id.iv_header_logo));
+            Glide.with(this).load(R.drawable.yucaipa_logo_trans).into((ImageView) findViewById(R.id.iv_header_logo));
 
             findViewById(R.id.btn_signup).setOnClickListener(new View.OnClickListener() {
                 @Override

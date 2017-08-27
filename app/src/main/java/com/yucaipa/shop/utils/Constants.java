@@ -24,11 +24,14 @@ public class Constants {
 
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = Geofence.NEVER_EXPIRE; //never expires
     public static final float GEOFENCE_RADIUS_IN_METERS = 500;
+    public static final float GEOFENCE_DWELL_RADIUS_IN_METERS = 10;
 
     public static String RAT_1 = "rat_1";
     public static String RAT_2 = "rat_2";
     public static String RAT_3 = "rat_3";
     public static String RAT_4 = "rat_4";
+
+    public static String SHOP_NAME = "shop_name";
 
     /*public static final HashMap<String, Location> LANDMARKS = new HashMap<String, Location>();
     static {

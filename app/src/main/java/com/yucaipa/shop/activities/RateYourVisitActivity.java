@@ -1,11 +1,13 @@
 package com.yucaipa.shop.activities;
 
+import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.bumptech.glide.Glide;
 import com.yucaipa.shop.R;
 import com.yucaipa.shop.utils.Constants;
 import com.yucaipa.shop.utils.MySingleton;
@@ -36,6 +39,8 @@ public class RateYourVisitActivity extends AppCompatActivity {
     String rat_1="",rat_2="",rat_3="",rat_4="";
     RadioGroup rg_knowledgeable, rg_efficiency, rg_helpful, rg_overall;
     Utils utils;
+    ImageView iv_shop_logo;
+    int shop_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,9 @@ public class RateYourVisitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rate_your_visit);
 
         utils = Utils.getInstance(this);
+
+        Intent i = getIntent();
+        shop_id = i.getIntExtra("shop_id",R.drawable.yucaipa_logo_trans);
 
         toolbar = (Toolbar) findViewById(R.id.rate_your_visit_toolbar);
         setSupportActionBar(toolbar);
@@ -62,6 +70,10 @@ public class RateYourVisitActivity extends AppCompatActivity {
         rg_efficiency = (RadioGroup) findViewById(R.id.rg_efficiency);
         rg_helpful = (RadioGroup) findViewById(R.id.rg_helpful);
         rg_overall = (RadioGroup) findViewById(R.id.rg_overall_exp);
+
+        iv_shop_logo = (ImageView) findViewById(R.id.iv_shop_logo);
+
+        Glide.with(this).load(shop_id).into(iv_shop_logo);
 
         rg_knowledgeable.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -180,7 +192,7 @@ public class RateYourVisitActivity extends AppCompatActivity {
                         printLog(response);
 
                         if(response.contains("suc")){
-                            Toast.makeText(RateYourVisitActivity.this,"Thank you for your rating.",Toast.LENGTH_LONG).show();
+                            Toast.makeText(RateYourVisitActivity.this,"Thank you for your valuable time.",Toast.LENGTH_LONG).show();
                             onBackPressed();
                         }else{
                             Toast.makeText(RateYourVisitActivity.this,"Something went wrong. Try again.",Toast.LENGTH_LONG).show();
@@ -215,6 +227,7 @@ public class RateYourVisitActivity extends AppCompatActivity {
                 params.put(Constants.RAT_2, rat_2);
                 params.put(Constants.RAT_3, rat_3);
                 params.put(Constants.RAT_4, rat_4);
+                params.put(Constants.SHOP_NAME, utils.getShopName(shop_id));
                 return params;
             }
         };

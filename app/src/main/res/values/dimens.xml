@@ -48,4 +48,25 @@
 
     <dimen name="alert_dialog_btn_size">18dp</dimen>
 
+    <!--rate your visit-->
+    <dimen name="shop_logo_width_height">100dp</dimen>
+    <dimen name="shop_logo_margin_top">10dp</dimen>
+    <dimen name="shop_logo_margin_bottom">16dp</dimen>
+
+    <dimen name="title_margin">8dp</dimen>
+    <dimen name="title_font_size">16sp</dimen>
+
+    <dimen name="ratings_font_size">14sp</dimen>
+    <dimen name="rating_margin_right">10dp</dimen>
+
+    <dimen name="rating_margin_left">16dp</dimen>
+
+    <dimen name="excellent_margin_right">20dp</dimen>
+    <dimen name="other_rating_margin_right">10dp</dimen>
+
+    <dimen name="rating_btn_submit_margin_left_right">40dp</dimen>
+    <dimen name="rating_btn_submit_margin_top">50dp</dimen>
+    <dimen name="rating_btn_submit_font_size">16sp</dimen>
+
+
 </resources>
