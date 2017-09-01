@@ -23,7 +23,7 @@ public class Constants {
 
 
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = Geofence.NEVER_EXPIRE; //never expires
-    public static final float GEOFENCE_RADIUS_IN_METERS = 500;
+    public static final float GEOFENCE_RADIUS_IN_METERS = 50; //50;
     public static final float GEOFENCE_DWELL_RADIUS_IN_METERS = 10;
 
     public static String RAT_1 = "rat_1";

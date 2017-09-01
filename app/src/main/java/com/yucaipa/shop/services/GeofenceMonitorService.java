@@ -96,6 +96,9 @@ public class GeofenceMonitorService extends Service implements
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+
+        Log.i("Service Started","Of course");
+
         questionList = new ArrayList<>();
         questionList = intent.getParcelableArrayListExtra("questions_obj");
 
@@ -181,7 +184,7 @@ public class GeofenceMonitorService extends Service implements
                     )
                     .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
-                    .setLoiteringDelay(60000) //if user spends 5 mins then rate your visit notification
+                    .setLoiteringDelay(300000) //if user spends 5 mins then rate your visit notification
                     .build());
         }
     }
