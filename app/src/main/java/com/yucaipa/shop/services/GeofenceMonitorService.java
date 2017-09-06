@@ -17,6 +17,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,6 +43,8 @@ public class GeofenceMonitorService extends Service implements
     protected GoogleApiClient mGoogleApiClient;
     List<Question> questionList;
 
+    LocationRequest mLocationRequest;
+
     Handler handler = new Handler();
     @Override
     public void onCreate() {
@@ -66,6 +69,8 @@ public class GeofenceMonitorService extends Service implements
     public void onConnected(@Nullable Bundle bundle) {
         //add geo fences
         addGeoFences();
+
+        setLocationUpdates();
     }
 
     @Override
@@ -97,7 +102,7 @@ public class GeofenceMonitorService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 
-        Log.i("Service Started","Of course");
+        Log.i("onStartCommand","Of course");
 
         questionList = new ArrayList<>();
         questionList = intent.getParcelableArrayListExtra("questions_obj");
@@ -124,6 +129,20 @@ public class GeofenceMonitorService extends Service implements
         }
         stopSelf();
         Log.i("Service Stopped","Yeah");
+    }
+
+    public void setLocationUpdates(){
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000); //10 secs
+        mLocationRequest.setFastestInterval(5000); //5secs
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        try {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, getGeofencePendingIntent());
+        }catch (SecurityException se){
+            se.printStackTrace();
+        }
+        Log.i("LocationReqs","Added");
     }
 
     public void addGeoFences(){

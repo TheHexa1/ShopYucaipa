@@ -116,8 +116,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void showSettingDialog() {
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//Setting priotity of Location request to high
-        locationRequest.setInterval(30 * 1000);
-        locationRequest.setFastestInterval(10* 1000);//10 sec Time interval for location update
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);//5 sec Time interval for location update
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true); //this is the key ingredient to show dialog always when GPS is off
