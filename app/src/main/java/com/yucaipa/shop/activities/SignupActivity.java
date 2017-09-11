@@ -5,8 +5,12 @@ import android.content.SharedPreferences;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -36,6 +40,7 @@ public class SignupActivity extends AppCompatActivity {
     Utils utils;
     TextInputEditText tiet_user_email, tiet_user_phone_no;
     SharedPreferences my_pref;
+    RelativeLayout mRootContentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +49,13 @@ public class SignupActivity extends AppCompatActivity {
         my_pref = getSharedPreferences("com.yucaipa.shop",MODE_PRIVATE);
 
         utils = Utils.getInstance(this);
+
         if(my_pref.getBoolean("isRegistered",false)){
             startActivity(new Intent(SignupActivity.this, FeaturedPhotoQuiz.class));
         }else {
             setContentView(R.layout.activity_signup);
 
+            mRootContentView = (RelativeLayout) findViewById(R.id.rl_root);
             tiet_user_email = (TextInputEditText) findViewById(R.id.tiet_user_email);
             tiet_user_phone_no = (TextInputEditText) findViewById(R.id.tiet_user_phone_no);
 
@@ -57,11 +64,12 @@ public class SignupActivity extends AppCompatActivity {
             findViewById(R.id.btn_signup).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     utils.showpDialog();
                     validateFields();
                 }
             });
+
+            checkEULA();
         }
 
 
@@ -136,5 +144,35 @@ public class SignupActivity extends AppCompatActivity {
         };
 
         MySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
+    private void checkEULA(){
+        if (!my_pref.contains(Constants.PREFKEY_EULA)) {
+//            enableMenu(false);
+            final View eulaView = getLayoutInflater().inflate(R.layout.eula, mRootContentView, false);
+            TextView tv_eula = (TextView) eulaView.findViewById(R.id.tv_eula);
+            tv_eula.setMovementMethod(LinkMovementMethod.getInstance());
+            View cancelView = eulaView.findViewById(R.id.cancel);
+            cancelView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            View okView = eulaView.findViewById(R.id.ok);
+            okView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mRootContentView.removeView(eulaView);
+                    SharedPreferences.Editor editor = my_pref.edit();
+                    editor.putBoolean(Constants.PREFKEY_EULA, true);
+                    editor.apply();
+                }
+            });
+
+            RelativeLayout.LayoutParams eulaParams =
+                    new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mRootContentView.addView(eulaView, eulaParams);
+        }
     }
 }

@@ -1,11 +1,11 @@
 package com.yucaipa.shop.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
@@ -13,8 +13,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -28,7 +30,6 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.yucaipa.shop.R;
 import com.yucaipa.shop.model.Question;
 import com.yucaipa.shop.services.GeofenceMonitorService;
-import com.yucaipa.shop.services.GeofenceTransitionsIntentService;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,8 @@ public class SettingsActivity extends AppCompatActivity {
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private static GoogleApiClient mGoogleApiClient;
     private static final int ACCESS_FINE_LOCATION_INTENT_ID = 3;
+
+    ImageView iv_calibration_img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +104,52 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.tv_calibrate).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCalibrationPopUp();
+            }
+        });
+
+        findViewById(R.id.tv_send_feedback).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendFeedback();
+            }
+        });
+
+    }
+
+    private void showCalibrationPopUp(){
+
+        View view = getLayoutInflater().inflate(R.layout.custom_calibration_popup,null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        iv_calibration_img = (ImageView) view.findViewById(R.id.iv_calibration_img);
+
+        builder.setView(view);
+
+//        Glide.with(this).load(R.drawable.calibration_instructions).into(iv_calibration_img);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        final AlertDialog alert =  builder.create();
+        alert.show();
+    }
+
+    private void sendFeedback(){
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+//        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "cyrano@cyranointeractive.com" });
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback from YF App");
+//        intent.putExtra(Intent.EXTRA_TEXT, "mail body");
+        startActivity(Intent.createChooser(intent, "Contact via"));
     }
 
     /* Initiate Google API Client  */

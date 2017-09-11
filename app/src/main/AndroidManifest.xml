@@ -15,7 +15,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.SignupActivity"
-            android:theme="@style/primary_white_theme">
+            android:theme="@style/primary_white_theme"
+            android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -58,6 +59,12 @@
 
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.RateYourVisitActivity"></activity>
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/fb_app_id"/>
+
+        <provider android:authorities="com.facebook.app.FacebookContentProvider171239630111235"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>

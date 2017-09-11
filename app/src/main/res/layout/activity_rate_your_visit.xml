@@ -382,4 +382,11 @@
         android:textColor="#fff"
         android:textSize="@dimen/rating_btn_submit_font_size" />
 
+    <com.facebook.share.widget.LikeView
+        android:id="@+id/like_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/rating_btn_submit_margin_left_right" />
+
 </LinearLayout>

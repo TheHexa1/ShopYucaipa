@@ -178,6 +178,23 @@ public class Utils extends Application {
         }
     }
 
+    public String getFBPageUrl(int flag){
+        switch (flag){
+            case R.drawable.ans1:
+                return "https://www.facebook.com/Frischs-Clock-Chalet-Gifts-508757595820237/";
+            case R.drawable.ans2:
+                return "https://www.facebook.com/hickoryranchyucaipa/";
+            case R.drawable.ans3:
+                return "https://www.facebook.com/LazerLegacy/";
+            case R.drawable.ans4:
+                return "https://www.facebook.com/pages/Sunshine-Growers/342941345778097";
+            case R.drawable.ans5:
+                return "https://www.facebook.com/UptownPetsFeedandPetSupplies/";
+            default:
+                return "https://www.facebook.com/YucaipaValleyChamberofCommerce/";
+        }
+    }
+
     public String getLocation(int flag){
         switch (flag){
             case R.drawable.ans1:

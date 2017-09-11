@@ -33,6 +33,8 @@ public class Constants {
 
     public static String SHOP_NAME = "shop_name";
 
+    public static String PREFKEY_EULA = "eulaAccepted";
+
     /*public static final HashMap<String, Location> LANDMARKS = new HashMap<String, Location>();
     static {
         // San Francisco International Airport.

@@ -111,7 +111,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         bigView.setOnClickPendingIntent(R.id.tv_call, PendingIntent.getActivity(this,1,callIntent,0));
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_yf)
                 .setAutoCancel(false)
                 .setSound(defaultSoundUri)
                 .setContentIntent(PendingIntent.getActivity(this, 2, accessIntent, 0))

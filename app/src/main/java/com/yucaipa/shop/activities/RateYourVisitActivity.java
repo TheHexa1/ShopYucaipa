@@ -22,6 +22,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.facebook.share.widget.LikeView;
 import com.yucaipa.shop.R;
 import com.yucaipa.shop.utils.Constants;
 import com.yucaipa.shop.utils.MySingleton;
@@ -41,6 +42,8 @@ public class RateYourVisitActivity extends AppCompatActivity {
     Utils utils;
     ImageView iv_shop_logo;
     int shop_id;
+
+    LikeView likeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,11 @@ public class RateYourVisitActivity extends AppCompatActivity {
         iv_shop_logo = (ImageView) findViewById(R.id.iv_shop_logo);
 
         Glide.with(this).load(shop_id).into(iv_shop_logo);
+
+        likeView = (LikeView) findViewById(R.id.like_view);
+        likeView.setObjectIdAndType(
+                utils.getFBPageUrl(shop_id),
+                LikeView.ObjectType.PAGE);
 
         rg_knowledgeable.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

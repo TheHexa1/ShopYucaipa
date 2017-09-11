@@ -68,4 +68,9 @@
     <dimen name="rating_btn_submit_margin_top">70dp</dimen>
     <dimen name="rating_btn_submit_font_size">20sp</dimen>
 
+    <!--EULA-->
+    <dimen name="activity_horizontal_margin">30dp</dimen>
+    <dimen name="activity_vertical_margin">30dp</dimen>
+    <dimen name="view_margin_size">20dp</dimen>
+
 </resources>

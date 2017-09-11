@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.facebook.share.widget.LikeView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yucaipa.shop.R;
@@ -111,6 +112,16 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         });
 
         iv_que_img = (ImageView) findViewById(R.id.iv_que_img);
+
+        /*temp*/
+        /*iv_que_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(FeaturedPhotoQuiz.this,RateYourVisitActivity.class);
+                i.putExtra("shop_id",R.drawable.ans3);
+                startActivity(i);
+            }
+        });*/
         iv_yucaipa_logo = (ImageView) findViewById(R.id.iv_yucaipa_logo);
 
         iv_yucaipa_logo.setOnClickListener(new View.OnClickListener() {
