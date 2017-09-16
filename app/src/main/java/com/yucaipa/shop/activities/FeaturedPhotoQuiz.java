@@ -118,7 +118,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(FeaturedPhotoQuiz.this,RateYourVisitActivity.class);
-                i.putExtra("shop_id",R.drawable.ans3);
+                i.putExtra("shop_id",R.drawable.ans5);
                 startActivity(i);
             }
         });*/
@@ -268,7 +268,9 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         /*findViewById(R.id.iv_que_img).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(FeaturedPhotoQuiz.this, RateYourVisitActivity.class));
+                Intent i = new Intent(FeaturedPhotoQuiz.this, RateYourVisitActivity.class);
+                i.putExtra("shop_id",shop_id);
+                startActivity(i);
             }
         });*/
 //        rg_ans.setOnCheckedChangeListener(null);

@@ -207,7 +207,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         bigView.setOnClickPendingIntent(R.id.tv_call, PendingIntent.getActivity(this,1,callIntent,0));
         
         notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)/*
+                .setSmallIcon(R.drawable.ic_yf)/*
                 .setContentTitle(title)
                 .setStyle(bigxtstyle)*/
                 .setAutoCancel(false)

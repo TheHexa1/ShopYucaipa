@@ -148,6 +148,9 @@ public class SignupActivity extends AppCompatActivity {
 
     private void checkEULA(){
         if (!my_pref.contains(Constants.PREFKEY_EULA)) {
+
+            findViewById(R.id.btn_signup).setVisibility(View.GONE);
+
 //            enableMenu(false);
             final View eulaView = getLayoutInflater().inflate(R.layout.eula, mRootContentView, false);
             TextView tv_eula = (TextView) eulaView.findViewById(R.id.tv_eula);
@@ -167,6 +170,8 @@ public class SignupActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = my_pref.edit();
                     editor.putBoolean(Constants.PREFKEY_EULA, true);
                     editor.apply();
+
+                    findViewById(R.id.btn_signup).setVisibility(View.VISIBLE);
                 }
             });
 
