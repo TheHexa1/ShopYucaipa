@@ -140,6 +140,13 @@ public class SettingsActivity extends AppCompatActivity {
 
         final AlertDialog alert =  builder.create();
         alert.show();
+
+        /*alert.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Glide.with(SettingsActivity.this).load(R.drawable.calibration_instructions).into(iv_calibration_img);
+            }
+        });*/
     }
 
     private void sendFeedback(){
