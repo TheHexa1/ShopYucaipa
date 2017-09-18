@@ -82,10 +82,12 @@ public class SignupActivity extends AppCompatActivity {
         }else if(!utils.isValidEmail(tiet_user_email.getText().toString())){
             utils.hidepDialog();
             tiet_user_email.setError("Enter valid email id!");
-        }else if(tiet_user_phone_no.getText().toString().equals("")){
+        }
+        /*else if(tiet_user_phone_no.getText().toString().equals("")){
             utils.hidepDialog();
             tiet_user_phone_no.setError("Please enter phone number!");
-        }else{
+        }*/
+        else{
             makeSignUpReq(FirebaseInstanceId.getInstance().getToken());
         }
 

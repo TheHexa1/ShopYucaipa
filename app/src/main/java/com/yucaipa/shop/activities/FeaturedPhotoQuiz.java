@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +36,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.share.widget.LikeView;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yucaipa.shop.R;
@@ -76,10 +88,17 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
     String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
 
+    SharedPreferences myPref;
+
+    private static final int REQUEST_CHECK_SETTINGS = 0x1;
+    private static GoogleApiClient mGoogleApiClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_featured_photo_quiz);
+
+        myPref = getSharedPreferences("com.yucaipa.shop",MODE_PRIVATE);
 
         utils = Utils.getInstance(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -194,6 +213,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
                 myPref.edit().putBoolean("isFirstRun", false).apply();
             }*/
 
+            enableProximityAlerts();
             loadQueImage();
         }
 
@@ -521,10 +541,97 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
                         .show();
                 ActivityCompat.finishAffinity(this);
             }else{
+                enableProximityAlerts();
                 loadQueImage();
             }
         }
 
+    }
+
+
+    private void enableProximityAlerts(){
+        initGoogleAPIClient();
+        showSettingDialog();
+
+        myPref.edit().putBoolean("isNotificationTurnedOn", true).apply();
+    }
+
+    /* Initiate Google API Client  */
+    private void initGoogleAPIClient() {
+        //Without Google API Client Auto Location Dialog will not work
+        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    /* Show Location Access Dialog */
+    private void showSettingDialog() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//Setting priotity of Location request to high
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);//5 sec Time interval for location update
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        builder.setAlwaysShow(true); //this is the key ingredient to show dialog always when GPS is off
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates state = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can initialize location
+                        // requests here.
+                        Intent i = new Intent(FeaturedPhotoQuiz.this, GeofenceMonitorService.class);
+                        i.putParcelableArrayListExtra("questions_obj",questions);
+                        startService(i);
+
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied. But could be fixed by showing the user
+                        // a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(FeaturedPhotoQuiz.this, REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            e.printStackTrace();
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way to fix the
+                        // settings so we won't show the dialog.
+                        break;
+                }
+            }
+        });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            // Check for the integer request code originally supplied to startResolutionForResult().
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        Log.e("Settings", "Result OK");
+                        //startLocationUpdates();
+                        break;
+                    case RESULT_CANCELED:
+                        Log.e("Settings", "Result Cancel");
+                        Intent i = new Intent(FeaturedPhotoQuiz.this, GeofenceMonitorService.class);
+                        i.putParcelableArrayListExtra("questions_obj",questions);
+                        startService(i);
+                        break;
+                }
+                break;
+        }
     }
 
     /*@Override
