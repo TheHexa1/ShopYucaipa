@@ -1,5 +1,6 @@
 package com.yucaipa.shop.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -45,6 +48,8 @@ public class RateYourVisitActivity extends AppCompatActivity {
 
     LikeView likeView;
 
+    TextView tv_response;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +78,8 @@ public class RateYourVisitActivity extends AppCompatActivity {
         rg_efficiency = (RadioGroup) findViewById(R.id.rg_efficiency);
         rg_helpful = (RadioGroup) findViewById(R.id.rg_helpful);
         rg_overall = (RadioGroup) findViewById(R.id.rg_overall_exp);
+
+        tv_response = (TextView) findViewById(R.id.tv_response);
 
         iv_shop_logo = (ImageView) findViewById(R.id.iv_shop_logo);
 
@@ -200,8 +207,10 @@ public class RateYourVisitActivity extends AppCompatActivity {
                         printLog(response);
 
                         if(response.contains("suc")){
-                            Toast.makeText(RateYourVisitActivity.this,"Thank you for your valuable time.",Toast.LENGTH_LONG).show();
-                            onBackPressed();
+//                            Toast.makeText(RateYourVisitActivity.this,"Thank you for your valuable time.",Toast.LENGTH_LONG).show();
+                            findViewById(R.id.rl_main_body).setVisibility(View.GONE);
+                            tv_response.setVisibility(View.VISIBLE);
+//                            onBackPressed();
                         }else{
                             Toast.makeText(RateYourVisitActivity.this,"Something went wrong. Try again.",Toast.LENGTH_LONG).show();
                         }

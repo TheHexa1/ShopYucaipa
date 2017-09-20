@@ -49,7 +49,7 @@
             android:id="@+id/tiet_user_phone_no"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="Phone No"
+            android:hint="Phone No. (optional)"
             android:inputType="number"
             android:maxLength="10"
             android:textColor="@color/primary_text"
