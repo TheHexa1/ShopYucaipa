@@ -113,7 +113,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_yf)
                 .setAutoCancel(false)
-                .setSound(defaultSoundUri)
+//                .setSound(defaultSoundUri)
                 .setContentIntent(PendingIntent.getActivity(this, 2, accessIntent, 0))
                 .setPriority(Notification.PRIORITY_MAX)
                 .setCustomContentView(bigView)
