@@ -105,7 +105,10 @@ public class GeofenceMonitorService extends Service implements
         Log.i("onStartCommand","Of course");
 
         questionList = new ArrayList<>();
-        questionList = intent.getParcelableArrayListExtra("questions_obj");
+
+        if(intent != null) {
+            questionList = intent.getParcelableArrayListExtra("questions_obj");
+        }
 
         // Get the geofences used. Geofence data is hard coded in this sample.
         mGeofenceList.clear();
@@ -114,7 +117,8 @@ public class GeofenceMonitorService extends Service implements
         if (!mGoogleApiClient.isConnecting() || !mGoogleApiClient.isConnected()) {
             mGoogleApiClient.connect();
         }
-        return super.onStartCommand(intent, flags, startId);
+//        return super.onStartCommand(intent, flags, startId);
+        return START_REDELIVER_INTENT;
     }
 
     @Override
