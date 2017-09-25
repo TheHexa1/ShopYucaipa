@@ -31,10 +31,9 @@
         android:id="@+id/iv_shop_logo"
         android:layout_width="@dimen/shop_logo_width_height"
         android:layout_height="100dp"
+        android:layout_marginTop="12dp"
         android:layout_below="@+id/rate_your_visit_toolbar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/shop_logo_margin_bottom"
-        android:layout_marginTop="@dimen/shop_logo_margin_top" />
+        android:layout_centerHorizontal="true" />
 
     <RelativeLayout
         android:id="@+id/rl_main_body"
@@ -114,7 +113,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView21"
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/rating_margin_left"
@@ -159,7 +158,6 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_shop_logo"
             android:layout_margin="@dimen/title_margin"
             android:gravity="center"
             android:text="Please rate your visit"
@@ -216,7 +214,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView21"
+                android:id="@+id/textView021"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/rating_margin_left"
@@ -266,7 +264,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView21"
+                android:id="@+id/textView201"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/rating_margin_left"
