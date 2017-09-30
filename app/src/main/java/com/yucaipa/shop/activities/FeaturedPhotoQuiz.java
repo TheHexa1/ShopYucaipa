@@ -86,7 +86,8 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
     int PERMISSION_ALL = 321;
 
-    String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
+    String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.CAMERA};
 
     SharedPreferences myPref;
 
@@ -111,6 +112,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         question = questions.get(current_que_no);
 
         toolbar = (Toolbar) findViewById(R.id.home_toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_attach_money_white);
         setSupportActionBar(toolbar);
 
         tv_ans_box = (TextView) findViewById(R.id.tv_ans_box);
@@ -504,8 +506,13 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
                 Intent i = new Intent(this, SettingsActivity.class);
                 i.putParcelableArrayListExtra("questions_obj",questions);
                 startActivity(i);
+                return true;
+            case android.R.id.home:
+                startActivity(new Intent(this, QRCodeScanner.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

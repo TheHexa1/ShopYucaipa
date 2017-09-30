@@ -123,6 +123,23 @@ public class Utils extends Application {
         }
     }
 
+    public String getShopNameFromMerchantID(String id){
+        switch (id){
+            case "YUC_CA_001":
+                return "Friches";
+            case "YUC_CA_004":
+                return "Hickory Ranch";
+            case "YUC_CA_005":
+                return "Lazer Legacy";
+            case "YUC_CA_003":
+                return "Sunshine Growers";
+            case "YUC_CA_002":
+                return "Uptown Pets";
+            default:
+                return "";
+        }
+    }
+
     public String getNotificationText(int flag){
         switch (flag){
             case R.drawable.ans1:

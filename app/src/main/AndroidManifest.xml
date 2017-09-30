@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- <uses-permission android:name="android.permission.CALL_PHONE" /> -->
     <application
@@ -58,13 +59,18 @@
         </receiver>
 
         <activity android:name=".activities.SettingsActivity" />
-        <activity android:name=".activities.RateYourVisitActivity"></activity>
+        <activity android:name=".activities.RateYourVisitActivity" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/fb_app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/fb_app_id" />
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider171239630111235"
+        <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:exported="true"/>
+            android:authorities="com.facebook.app.FacebookContentProvider171239630111235"
+            android:exported="true" />
+
+        <activity android:name=".activities.QRCodeScanner"></activity>
     </application>
 
 </manifest>

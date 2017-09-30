@@ -46,7 +46,7 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        my_pref = getSharedPreferences("com.yucaipa.shop",MODE_PRIVATE);
+        my_pref = getSharedPreferences(Constants.myPrefKey,MODE_PRIVATE);
 
         utils = Utils.getInstance(this);
 
@@ -105,6 +105,9 @@ public class SignupActivity extends AppCompatActivity {
 //                            if(responseJson.getString("result_code").equals("0")){
                                 my_pref.edit().putBoolean("isRegistered",true).apply();
                                 utils.showAlertDialog("You are successfully registered");
+
+                            my_pref.edit().putString("user_id",tiet_user_email.getText().toString()).apply();
+                            my_pref.edit().putString("user_phone_no",tiet_user_phone_no.getText().toString()).apply();
 //                            }else{
 //                                my_pref.edit().putBoolean("isRegistered",false).apply();
 //                                utils.showAlertDialog(responseJson.getString("message"));
