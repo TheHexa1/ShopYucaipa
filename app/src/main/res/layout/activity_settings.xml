@@ -29,13 +29,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Turn proximity notification on/off"
-            android:textSize="18sp" />
+            android:textSize="@dimen/setting_text_font_size" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/mSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="7dp"
+            android:padding="@dimen/switch_padding"
             android:textOff="Off"
             android:textOn="On" />
 
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:text="Calibrate Maps and GPS"
-        android:textSize="18sp" />
+        android:textSize="@dimen/setting_text_font_size" />
 
     <TextView
         android:id="@+id/tv_send_feedback"
@@ -55,6 +55,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:text="Contact the Developer"
-        android:textSize="18sp" />
+        android:textSize="@dimen/setting_text_font_size" />
 
 </LinearLayout>

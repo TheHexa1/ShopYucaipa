@@ -3,6 +3,8 @@ package com.yucaipa.shop.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -34,6 +37,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.facebook.share.widget.LikeView;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -48,15 +61,23 @@ import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.yucaipa.shop.R;
 import com.yucaipa.shop.model.Question;
 import com.yucaipa.shop.services.GeofenceMonitorService;
+import com.yucaipa.shop.utils.Constants;
+import com.yucaipa.shop.utils.MySingleton;
 import com.yucaipa.shop.utils.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class FeaturedPhotoQuiz extends AppCompatActivity {
@@ -508,7 +529,10 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
                 startActivity(i);
                 return true;
             case android.R.id.home:
-                startActivity(new Intent(this, QRCodeScanner.class));
+                IntentIntegrator integrator = new IntentIntegrator(this);
+                integrator.setCaptureActivity(QRCodeScanner.class);
+                integrator.initiateScan();
+//                startActivity(new Intent(this, QRCodeScanner.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -622,9 +646,9 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
             // Check for the integer request code originally supplied to startResolutionForResult().
-            case REQUEST_CHECK_SETTINGS:
+//            case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case RESULT_OK:
                         Log.e("Settings", "Result OK");
@@ -637,7 +661,23 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
                         startService(i);
                         break;
                 }
-                break;
+//                break;
+        }else{
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if(result != null) {
+                if(result.getContents() == null) {
+                    Log.d("FeaturedPhotoQuiz", "Cancelled scan");
+                    Toast.makeText(this, "Scan Cancelled", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d("FeaturedPhotoQuiz", "Scanned");
+                    qrcode = result.getContents();
+                    recordPurchase();
+                }
+            } else {
+                // This is important, otherwise the result will not be passed to the fragment
+                super.onActivityResult(requestCode, resultCode, data);
+            }
+
         }
     }
 
@@ -647,4 +687,145 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
     }*/
+
+    String TAG = "QRCodeScanner:";
+    String qrcode= "";
+
+    private void recordPurchase(){
+
+        utils.showpDialog();
+
+        JSONObject jsonParam = new JSONObject();
+
+        try {
+            jsonParam.put("m_id",qrcode);
+            jsonParam.put("client_id","0"); //static for now
+            jsonParam.put("user_id",myPref.getString("user_id",null));
+            Log.i(TAG,jsonParam.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            // If you would like to resume scanning, call this method below:
+//            mScannerView.resumeCameraPreview(this);
+        }
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Constants.RECORD_OF_PURCHASE_URL, jsonParam, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+
+                try {
+                    // Parsing json object response
+                    // response will be a json object
+                    String result_code = response.getString("result_code");
+
+                    if(result_code.equals("111") || result_code.equals("222")){
+//                        Toast.makeText(getApplication(),"Your purchase is recorded successfully", Toast.LENGTH_LONG).show();
+                        editPurchaseCounter();
+                        showPurchaseRecordPopUp("Your purchase is recorded successfully");
+                        if(result_code.equals("111")){
+                            showNotification();
+                        }
+                    }else if(result_code.equals("555")){
+                        showPurchaseRecordPopUp("QRcode is invalid!");
+                    }else if(result_code.equals("777")){
+                        showPurchaseRecordPopUp("Some fields are missing");
+//                        Toast.makeText(getApplication(),"Some fields are missing", Toast.LENGTH_LONG).show();
+                    }
+                    onBackPressed();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.i(TAG, e.getMessage());
+                }
+                utils.hidepDialog();
+                // If you would like to resume scanning, call this method below:
+//                mScannerView.resumeCameraPreview(QRCodeScanner.this);
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                if(error instanceof TimeoutError) {
+//                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    showPurchaseRecordPopUp("Request timed out due to slow internet! Please try again");
+                    /*Toast.makeText(getApplicationContext(),
+                            error.getMessage() + "Timeout occured", Toast.LENGTH_LONG).show();*/
+                    VolleyLog.d(TAG, "timeout Error: ");
+                }
+                else if(error instanceof ServerError) {
+                    VolleyLog.d(TAG, "server Error: ");
+                    showPurchaseRecordPopUp("Something went wrong on server! Contact admin");
+                    /*Toast.makeText(getApplicationContext(),
+                            error.getMessage() + "Server error occured", Toast.LENGTH_LONG).show();*/
+                }else if (error instanceof NetworkError || error instanceof AuthFailureError || error instanceof NoConnectionError) {
+//                    Toast.makeText(getApplicationContext(), "No internet!", Toast.LENGTH_LONG).show();
+                    showPurchaseRecordPopUp("Make sure that your device is connected to internet");
+                }
+                // hide the progress dialog
+                utils.hidepDialog();
+                // If you would like to resume scanning, call this method below:
+//                mScannerView.resumeCameraPreview(QRCodeScanner.this);
+            }
+        });
+
+        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
+                Constants.NORMAL_VOLLEY_TIMEOUT,
+                Constants.VOLLEY_RETRY_COUNTS,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // Adding request to request queue
+        MySingleton.getInstance(this).addToRequestQueue(jsonObjReq);
+    }
+
+    private void showNotification(){
+
+
+        Calendar c = Calendar.getInstance();
+
+        // The id of the channel.
+        String CHANNEL_ID = "my_channel_01";
+        Notification notification =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_yf)
+                        .setContentTitle("Congratulations!")
+                        .setContentText("You have made 5 purchases at "+utils.getShopNameFromMerchantID(qrcode))
+                        .build();
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // mNotificationId is a unique integer your app uses to identify the
+        // notification. For example, to cancel the notification, you can pass its ID
+        // number to NotificationManager.cancel().
+        mNotificationManager.notify((int)(c.getTimeInMillis()/1234), notification);
+    }
+
+    private void showPurchaseRecordPopUp(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(message);
+        builder.setCancelable(true);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void editPurchaseCounter(){
+        int counter = myPref.getInt("purchase_counter",0);
+        counter++;
+        if(counter == 5) {
+            myPref.edit().putInt("purchase_counter", 0).apply();
+        }else{
+            myPref.edit().putInt("purchase_counter", counter).apply();
+        }
+    }
 }

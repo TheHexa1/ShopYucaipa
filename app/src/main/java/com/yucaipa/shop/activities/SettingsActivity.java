@@ -75,6 +75,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         switchCompat = (SwitchCompat) findViewById(R.id.mSwitch);
 
+        if(getResources().getBoolean(R.bool.isTablet)){
+            switchCompat.setScaleX(1.5f);
+            switchCompat.setScaleY(1.5f);
+        }
+
         myPref = getSharedPreferences("com.yucaipa.shop",MODE_PRIVATE);
         if(myPref.getBoolean("isNotificationTurnedOn", false)){
             switchCompat.setChecked(true);
