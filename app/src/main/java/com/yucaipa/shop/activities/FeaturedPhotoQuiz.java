@@ -699,7 +699,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
         try {
             jsonParam.put("m_id",qrcode);
-            jsonParam.put("client_id","0"); //static for now
+            jsonParam.put("client_id","1"); //static for now
             jsonParam.put("user_id",myPref.getString("user_id",null));
             Log.i(TAG,jsonParam.toString());
         } catch (JSONException e) {
@@ -790,7 +790,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_yf)
                         .setContentTitle("Congratulations!")
-                        .setContentText("You have made 5 purchases at "+utils.getShopNameFromMerchantID(qrcode))
+                        .setContentText("You have made 5 purchases")
                         .build();
 
         NotificationManager mNotificationManager =

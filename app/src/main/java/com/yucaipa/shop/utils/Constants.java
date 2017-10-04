@@ -14,7 +14,7 @@ public class Constants {
     public static String BASE_URL = "http://solankivivek.com/api";
     public static String SIGNUP_URL = BASE_URL + "/register/register.php";
     public static String RATINGS_URL = BASE_URL + "/send_user_ratings.php";
-    public static String RECORD_OF_PURCHASE_URL = BASE_URL + "/record_user_purchase.php";
+    public static String RECORD_OF_PURCHASE_URL = BASE_URL + "/record_user_purchase_new.php";
 
     public static String USER_DEVICE_ID = "device_id";
     public static String USER_EMAIL = "user_email";

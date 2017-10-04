@@ -111,8 +111,10 @@ public class QRCodeScanner extends AppCompatActivity {
     private void populatePurchases(int total){
         for(int i=1; i<total+1; i++){
             String iv = "iv_"+i;
-            ImageView imageView = (ImageView) findViewById(utils.getDrawableResId(iv));
-            Glide.with(this).load(R.drawable.ic_check_circle_green_24dp).into(imageView);
+            int resID = getResources().getIdentifier(iv, "id", "com.yucaipa.shop");
+            ImageView imageView = (ImageView) findViewById(resID);
+            imageView.setImageResource(R.drawable.ic_check_circle_green_24dp);
+//            Glide.with(this).load(R.drawable.ic_check_circle_green_24dp).into(imageView);
         }
     }
 
