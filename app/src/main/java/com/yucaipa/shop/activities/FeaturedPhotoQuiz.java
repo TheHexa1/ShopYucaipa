@@ -181,7 +181,7 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             }
         });
 
-        Glide.with(this).load(R.drawable.yucaipa_logo_quiz_1).into(iv_yucaipa_logo);
+        Glide.with(this).load(R.drawable.game_logo_home).into(iv_yucaipa_logo);
 /*
         Glide.with(this)
                 .load(utils.getDrawableResId(question.getQueImgDrawable()))
@@ -298,25 +298,26 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
         shop_id = utils.getDrawableResId("ans"+question.getQueNo());
 
-        if(question.getQueNo() % 2 != 0){
-            Glide.with(this).load(R.drawable.yucaipa_logo_quiz_1).into(iv_yucaipa_logo);
-        }else{
-            Glide.with(this).load(R.drawable.yucaipa_logo_quiz_2).into(iv_yucaipa_logo);
-        }
+//        if(question.getQueNo() % 2 != 0){
+//        Glide.with(this).load(R.drawable.game_home_logo).into(iv_yucaipa_logo);
+//        }else{
+//            Glide.with(this).load(R.drawable.yucaipa_logo_quiz_2).into(iv_yucaipa_logo);
+//        }
 
         Glide.with(this)
                 .load(utils.getDrawableResId(question.getQueImgDrawable()))
                 .into(iv_que_img);
 
         //temporary
-        /*findViewById(R.id.iv_que_img).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.iv_que_img).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(FeaturedPhotoQuiz.this, RateYourVisitActivity.class);
-                i.putExtra("shop_id",shop_id);
-                startActivity(i);
+                Intent guidanceIntent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("https://www.google.com/maps/dir/?api=1&origin=my location&destination="+utils.getLocation(shop_id)+"&travelmode=driving"));
+                guidanceIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(guidanceIntent);
             }
-        });*/
+        });
 //        rg_ans.setOnCheckedChangeListener(null);
 /*
         rd_choice_1.setChecked(false);
@@ -369,8 +370,9 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
 
             dialogInterface.dismiss();
 
-            message = "Correct!";
-            btn_label = "Take me to it";
+            message = question.getCorrectAnsText();
+//            btn_label = "Take me to it";
+            btn_label = "Correct!";
             builder.setView(view);
 
             /*if(question.getQueNo() == 2){
@@ -379,28 +381,28 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
                 view.findViewById(R.id.iv_ans_logo).setBackgroundColor(Color.WHITE);
             }*/
 
-            Glide.with(this)
-                    .load(utils.getDrawableResId(question.getAnsImgDrawable()))
-                    .into((ImageView) view.findViewById(R.id.iv_ans_logo));
+//            Glide.with(this)
+//                    .load(utils.getDrawableResId(question.getAnsImgDrawable()))
+//                    .into((ImageView) view.findViewById(R.id.iv_ans_logo));
 
-            builder.setNegativeButton("CALL", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                    String phone_no = utils.getTelephoneNumber(utils.getDrawableResId(question.getAnsImgDrawable()));
-                    Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+phone_no));
-                    startActivity(callIntent);
-                }
-            });
-
-            builder.setPositiveButton("OFFER", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String url = utils.getWebsiteUrl(utils.getDrawableResId(question.getAnsImgDrawable()));
-                    Intent callIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(callIntent);
-                }
-            });
+//            builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//
+//                    String phone_no = utils.getTelephoneNumber(utils.getDrawableResId(question.getAnsImgDrawable()));
+//                    Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+phone_no));
+//                    startActivity(callIntent);
+//                }
+//            });
+//
+//            builder.setPositiveButton("OFFER", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    String url = utils.getWebsiteUrl(utils.getDrawableResId(question.getAnsImgDrawable()));
+//                    Intent callIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                    startActivity(callIntent);
+//                }
+//            });
         }else{
             message = "Wrong!";
             btn_label = "Try Again!";
@@ -411,15 +413,17 @@ public class FeaturedPhotoQuiz extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                if(message.equals("Correct!")){
+                dialog.dismiss();
+
+               /* if(message.equals("Correct!")){
                     Intent guidanceIntent = new Intent(android.content.Intent.ACTION_VIEW,
                             Uri.parse("https://www.google.com/maps/dir/?api=1&origin=my location&destination="+utils.getLocation(shop_id)+"&travelmode=driving"));
-        /*https://www.google.com/maps/dir/?api=1&origin=Uptown Pets, 35039 Yucaipa Blvd, Yucaipa, CA 92399&destination=Frisch's Clock Chalet & Gift Shop&travelmode=driving*/
+        *//*https://www.google.com/maps/dir/?api=1&origin=Uptown Pets, 35039 Yucaipa Blvd, Yucaipa, CA 92399&destination=Frisch's Clock Chalet & Gift Shop&travelmode=driving*//*
                     guidanceIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(guidanceIntent);
                 }else {
                     dialog.dismiss();
-                }
+                }*/
             }
         });
 

@@ -24,7 +24,8 @@ public class Question implements Parcelable {
     /*private String queImgUrl;
     private String ansImgUrl;*/
     private String queImgDrawable;
-    private String ansImgDrawable;
+//    private String ansImgDrawable;
+    private String correctAnsText;
     private String latitude;
     private String longitude;
 
@@ -38,7 +39,8 @@ public class Question implements Parcelable {
         choice3 = in.readString();
         ansChoice = in.readInt();
         queImgDrawable = in.readString();
-        ansImgDrawable = in.readString();
+//        ansImgDrawable = in.readString();
+        correctAnsText = in.readString();
         latitude = in.readString();
         longitude = in.readString();
     }
@@ -127,13 +129,13 @@ public class Question implements Parcelable {
         this.queImgDrawable = queImgDrawable;
     }
 
-    public String getAnsImgDrawable() {
-        return ansImgDrawable;
-    }
-
-    public void setAnsImgDrawable(String ansImgDrawable) {
-        this.ansImgDrawable = ansImgDrawable;
-    }
+//    public String getAnsImgDrawable() {
+//        return ansImgDrawable;
+//    }
+//
+//    public void setAnsImgDrawable(String ansImgDrawable) {
+//        this.ansImgDrawable = ansImgDrawable;
+//    }
 
     public String getLatitude() {
         return latitude;
@@ -149,6 +151,14 @@ public class Question implements Parcelable {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getCorrectAnsText() {
+        return correctAnsText;
+    }
+
+    public void setCorrectAnsText(String correctAnsText) {
+        this.correctAnsText = correctAnsText;
     }
 
     @Override
@@ -167,7 +177,8 @@ public class Question implements Parcelable {
         dest.writeString(choice3);
         dest.writeInt(ansChoice);
         dest.writeString(queImgDrawable);
-        dest.writeString(ansImgDrawable);
+//        dest.writeString(ansImgDrawable);
+        dest.writeString(correctAnsText);
         dest.writeString(latitude);
         dest.writeString(longitude);
     }

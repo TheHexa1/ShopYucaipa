@@ -50,7 +50,7 @@ public class GeofenceMonitorService extends Service implements
     public void onCreate() {
         super.onCreate();
 
-        Log.i("Service Started","Of course");
+
 
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<Geofence>();
@@ -219,5 +219,7 @@ public class GeofenceMonitorService extends Service implements
                 .addApi(LocationServices.API)
                 .build();
 //        mGoogleApiClient.connect();
+
+        Log.i("Service Started","Of course");
     }
 }
