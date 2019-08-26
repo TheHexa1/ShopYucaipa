@@ -213,19 +213,20 @@ public class Utils extends Application {
     }
 
     public String getLocation(int flag){
+        String destination = "my location";
         switch (flag){
             case R.drawable.ans1:
-                return "Frisch's Clock Chalet & Gift Shop, 35145 Yucaipa Blvd, Yucaipa, CA 92399";
+                return "34.056667, -117.182472";
             case R.drawable.ans2:
-                return "Hickory Ranch Steakhouse, 32971 Yucaipa Blvd, Yucaipa, CA 92399";
+                return "34.057667, -117.181778";
             case R.drawable.ans3:
-                return "Lazer Legacy, 32355 Yucaipa Blvd Suite 11, Yucaipa, CA 92399";
+                return "34.059028, -117.183694";
             case R.drawable.ans4:
-                return "Sunshine Nurseries, 34017 Yucaipa Blvd, Yucaipa, CA 92399";
-            case R.drawable.ans5:
-                return "Uptown Pets, 35039 Yucaipa Blvd, Yucaipa, CA 92399";
+                return "34.057167, -117.182389";
+//            case R.drawable.ans5:
+//                return "Uptown Pets, 35039 Yucaipa Blvd, Yucaipa, CA 92399";
             default:
-                return "my location";
+                return destination;
         }
     }
 
