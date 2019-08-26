@@ -75,7 +75,7 @@ public class QRCodeScanner extends AppCompatActivity {
 
         populatePurchases(myPref.getInt("purchase_counter",0));
 
-        Glide.with(this).load(R.drawable.yucaipa_logo_quiz_1).into((ImageView)findViewById(R.id.iv_yucaipa_logo));
+        Glide.with(this).load(R.drawable.game_logo_home).into((ImageView)findViewById(R.id.iv_yucaipa_logo));
 
     }
 
